@@ -1,4 +1,124 @@
 <?php include 'header.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Primary Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact ETTAAJ RENT CARS | 24/7 Car Rental Support in Casablanca</title>
+  <meta name="description" content="Contact ETTAAJ RENT CARS in Casablanca. Call +212 772 331 080 or email contact@ettaajrentcars.ma. 24/7 support, WhatsApp, map & form." />
+  <meta name="keywords" content="contact ETTAAJ RENT CARS, car rental Casablanca, phone +212772331080, location voiture Casablanca, WhatsApp rental Morocco" />
+  <meta name="author" content="ETTAAJ RENT CARS" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="en, ar" />
+  <meta name="geo.region" content="MA" />
+  <meta name="geo.placename" content="Casablanca" />
+  <meta name="geo.position" content="33.5731;-7.5898" />
+  <meta name="ICBM" content="33.5731, -7.5898" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://www.ettaajrentcars.ma/contact.php" />
+
+  <!-- Favicon & Apple Icons -->
+  <link rel="icon" href="/pub_img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/pub_img/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/pub_img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/pub_img/favicon-16x16.png" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Contact ETTAAJ RENT CARS | 24/7 Support" />
+  <meta property="og:description" content="Call +212 772 331 080 | WhatsApp | Email | Visit us in Casablanca. Premium car rental." />
+  <meta property="og:url" content="https://www.ettaajrentcars.ma/contact.php" />
+  <meta property="og:site_name" content="ETTAAJ RENT CARS" />
+  <meta property="og:image" content="https://www.ettaajrentcars.ma/pub_img/contact-og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="ar_MA" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact ETTAAJ RENT CARS | +212 772 331 080" />
+  <meta name="twitter:description" content="24/7 support. WhatsApp, call, email, or visit us in Casablanca." />
+  <meta name="twitter:image" content="https://www.ettaajrentcars.ma/pub_img/contact-og.jpg" />
+  <meta name="twitter:site" content="@ettaajrentcars" />
+  <meta name="twitter:creator" content="@ettaajrentcars" />
+
+  <!-- Business Schema (LocalBusiness) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ETTAAJ RENT CARS",
+    "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
+    "url": "https://www.ettaajrentcars.ma",
+    "telephone": "+212772331080",
+    "email": "contact@ettaajrentcars.ma",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Boulevard Mohamed V",
+      "addressLocality": "Casablanca",
+      "addressRegion": "Grand Casablanca",
+      "postalCode": "20000",
+      "addressCountry": "MA"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 33.5731,
+      "longitude": -7.5898
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+212772331080",
+      "contactType": "customer service",
+      "areaServed": "MA",
+      "availableLanguage": ["English", "Arabic", "French"]
+    },
+    "sameAs": [
+      "https://facebook.com/ettaajrentcars",
+      "https://instagram.com/ettaajrentcars",
+      "https://twitter.com/ettaajrentcars"
+    ]
+  }
+  </script>
+
+  <!-- CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            gold: '#FFD700', 
+            'gold-dark': '#E6C200',
+            'dark-bg': '#36454F',
+            'darker-bg': '#2C3A44',
+            'border': '#4A5A66'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- Performance Headers -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=yes" />
+  <meta name="theme-color" content="#36454F" />
+</head>
+<body class="bg-dark-bg text-white">
 
 <main class="max-w-7xl mx-auto px-4 py-16 lg:py-24 bg-[#36454F]">
   <!-- Page Title -->
@@ -42,7 +162,7 @@
             </div>
             <div>
               <p class="font-medium text-white">Office Location</p>
-              <p class="text-gray-300">Casablanca, Morocco</p>
+              <p class="text-gray-300">123 Boulevard Mohamed V, Casablanca, Morocco</p>
             </div>
           </div>
 
@@ -54,7 +174,7 @@
             </div>
             <div>
               <p class="font-medium text-white">Phone</p>
-              <a href="tel:+212600000000" class="text-gold hover:underline">+212 600 000 000</a>
+              <a href="tel:+212772331080" class="text-gold hover:underline">+212 772 331 080</a>
             </div>
           </div>
 
@@ -66,32 +186,26 @@
             </div>
             <div>
               <p class="font-medium text-white">Email</p>
-              <a href="mailto:contact@goldcar.ma" class="text-gold hover:underline">contact@goldcar.ma</a>
+              <a href="mailto:contact@ettaajrentcars.ma" class="text-gold hover:underline">contact@ettaajrentcars.ma</a>
             </div>
           </div>
         </div>
 
-        <!-- Social Links with Brand Colors -->
+        <!-- Social Links -->
         <div class="flex space-x-4 mt-8">
-          <a href="https://instagram.com/goldcar_rental" target="_blank" class="group">
+          <a href="https://www.instagram.com/ettaaj.rentcars/?hl=am-et" target="_blank" class="group">
             <div class="w-12 h-12 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-xl flex items-center justify-center text-white transform transition group-hover:scale-110 hover:shadow-lg hover:shadow-purple-500/50">
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
             </div>
           </a>
 
-          <a href="https://facebook.com/goldcar.rental" target="_blank" class="group">
+          <a href="https://www.facebook.com/profile.php?id=61559816313152#" target="_blank" class="group">
             <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white transform transition group-hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50">
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             </div>
           </a>
 
-          <a href="https://twitter.com/goldcar_rental" target="_blank" class="group">
-            <div class="w-12 h-12 bg-black rounded-xl flex items-center justify-center text-white transform transition group-hover:scale-110 hover:shadow-lg hover:shadow-gray-700/50">
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </div>
-          </a>
-
-          <a href="https://wa.me/212600000000?text=Hi%20GoldCar%2C%20I%20want%20to%20rent%20a%20car!" target="_blank" class="group">
+          <a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%20RENT%20CARS%2C%20I%20want%20to%20rent%20a%20car!" target="_blank" class="group">
             <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white transform transition group-hover:scale-110 hover:shadow-lg hover:shadow-green-500/50">
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.297-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.884 3.488"/>
@@ -145,7 +259,7 @@
 <?php include 'footer.php'; ?>
 
 <!-- Floating WhatsApp Button -->
-<a href="https://wa.me/212600000000?text=Hi%20GoldCar%2C%20I%20want%20to%20rent%20a%20car!"
+<a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%20RENT%20CARS%2C%20I%20want%20to%20rent%20a%20car!"
    target="_blank"
    class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-2xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 z-50 flex items-center justify-center group"
    aria-label="Chat on WhatsApp">
@@ -158,7 +272,6 @@
 </a>
 
 <!-- AOS Animation Library -->
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <style>
@@ -202,3 +315,5 @@
     easing: 'ease-out-quart'
   });
 </script>
+</body>
+</html>

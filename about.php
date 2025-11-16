@@ -1,4 +1,119 @@
 <?php include 'header.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Primary Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About ETTAAJ RENT CARS | Premium Car Rental in Casablanca, Morocco</title>
+  <meta name="description" content="Discover ETTAAJ RENT CARS - Morocco's premier car rental service. Luxury vehicles, 24/7 support, golden service. Call +212 772 331 080" />
+  <meta name="keywords" content="about ETTAAJ RENT CARS, car rental Casablanca, luxury car hire Morocco, mission vision values, location voiture premium" />
+  <meta name="author" content="ETTAAJ RENT CARS" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="en, ar" />
+  <meta name="geo.region" content="MA" />
+  <meta name="geo.placename" content="Casablanca" />
+  <meta name="geo.position" content="33.5731;-7.5898" />
+  <meta name="ICBM" content="33.5731, -7.5898" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://www.ettaajrentcars.ma/about.php" />
+
+  <!-- Favicon & Apple Icons -->
+  <link rel="icon" href="/pub_img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/pub_img/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/pub_img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/pub_img/favicon-16x16.png" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About ETTAAJ RENT CARS | Excellence in Car Rental" />
+  <meta property="og:description" content="Learn about our mission, vision, and values. Premium car rental with golden service in Morocco." />
+  <meta property="og:url" content="https://www.ettaajrentcars.ma/about.php" />
+  <meta property="og:site_name" content="ETTAAJ RENT CARS" />
+  <meta property="og:image" content="https://www.ettaajrentcars.ma/pub_img/about-og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="ar_MA" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About ETTAAJ RENT CARS | Driven by Excellence" />
+  <meta name="twitter:description" content="Premium car rental in Casablanca. Mission: Seamless, safe, stylish journeys." />
+  <meta name="twitter:image" content="https://www.ettaajrentcars.ma/pub_img/about-og.jpg" />
+  <meta name="twitter:site" content="@ettaajrentcars" />
+  <meta name="twitter:creator" content="@ettaajrentcars" />
+
+  <!-- Business Schema (LocalBusiness) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ETTAAJ RENT CARS",
+    "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
+    "url": "https://www.ettaajrentcars.ma",
+    "telephone": "+212772331080",
+    "email": "contact@ettaajrentcars.ma",
+    "description": "Premium car rental service in Casablanca, Morocco. Luxury vehicles, 24/7 support, golden service.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Boulevard Mohamed V",
+      "addressLocality": "Casablanca",
+      "addressRegion": "Grand Casablanca",
+      "postalCode": "20000",
+      "addressCountry": "MA"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 33.5731,
+      "longitude": -7.5898
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    ],
+    "priceRange": "MAD 300 - 3000",
+    "sameAs": [
+      "https://facebook.com/ettaajrentcars",
+      "https://instagram.com/ettaajrentcars",
+      "https://twitter.com/ettaajrentcars"
+    ]
+  }
+  </script>
+
+  <!-- CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            gold: '#FFD700', 
+            'gold-dark': '#E6C200',
+            'dark-bg': '#36454F',
+            'darker-bg': '#2C3A44',
+            'border': '#4A5A66'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- Performance Headers -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="telephone=yes" />
+  <meta name="theme-color" content="#36454F" />
+</head>
+<body class="bg-dark-bg text-white">
 
 <main class="max-w-7xl mx-auto px-4 py-16 text-center bg-[#36454F]">
   <!-- Animated Hero Section -->
@@ -20,26 +135,38 @@
     </div>
 
     <div class="relative z-10 max-w-5xl mx-auto px-4">
-      <!-- Logo + Name -->
+      <!-- Logo + Name + Phone -->
       <div data-aos="fade-down" data-aos-delay="400" class="mb-8">
-        <div class="flex justify-center items-center gap-3">
-          <img src="pub_img/GoldCar.png" alt="Gold Cars Logo" class="w-16 h-16 rounded-full ring-4 ring-gold/60 shadow-2xl">
-          <h1 class="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent drop-shadow-2xl">
-            Gold Cars
-          </h1>
+        <div class="flex flex-col items-center gap-4">
+          <div class="flex items-center gap-3">
+            <img src="pub_img/GoldCar.png" alt="ETTAAJ RENT CARS Logo"
+                 class="w-16 h-16 rounded-full ring-4 ring-gold/60 shadow-2xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent drop-shadow-2xl">
+              ETTAAJ RENT CARS
+            </h1>
+          </div>
+
+          <!-- Phone Number (Hero) -->
+          <a href="tel:+212772331080"
+             class="flex items-center gap-2 text-gold font-semibold text-lg hover:text-yellow-400 transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+            </svg>
+            +212 772 331 080
+          </a>
         </div>
       </div>
 
       <!-- Title -->
-      <h1 data-aos="zoom-in" data-aos-delay="700" data-aos-duration="1000"
+      <h2 data-aos="zoom-in" data-aos-delay="700" data-aos-duration="1000"
           class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
         Driven by <span class="text-gold animate-pulse">Excellence</span>
-      </h1>
+      </h2>
 
       <!-- Subtitle -->
       <p data-aos="fade-up" data-aos-delay="1000" 
          class="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-        At Gold Cars, we believe every journey should be exceptional. Founded with a passion for excellence, 
+        At ETTAAJ RENT CARS, we believe every journey should be exceptional. Founded with a passion for excellence, 
         we deliver premium car rental experiences that combine luxury, reliability, and unmatched customer care.
       </p>
 
@@ -149,8 +276,14 @@
 <?php include 'footer.php'; ?>
 
 <!-- AOS + Custom Animations -->
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    once: true,
+    duration: 1000,
+    easing: 'ease-out-quart'
+  });
+</script>
 
 <style>
   :root {
@@ -196,11 +329,5 @@
   .hover\:shadow-gold\/20:hover { box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2); }
   .hover\:shadow-gold\/50:hover { box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
 </style>
-
-<script>
-  AOS.init({
-    once: true,
-    duration: 1000,
-    easing: 'ease-out-quart'
-  });
-</script>
+</body>
+</html>
