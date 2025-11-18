@@ -13,7 +13,7 @@ session_start();
    2. DATABASE CONNECTION (YOUR CODE)
    ------------------------------------------------- */
 $host    = '127.0.0.1';
-$db      = 'car_rental';
+$db      = 'ettaajrentcars';
 $user    = 'root';
 $pass    = '';                 // XAMPP default
 $charset = 'utf8mb4';

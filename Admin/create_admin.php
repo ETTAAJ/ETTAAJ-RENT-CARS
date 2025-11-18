@@ -2,7 +2,7 @@
 require_once 'config.php';
 
 $username = 'admin';
-$password = 'admin6795';  // Change this later!
+$password = 'admin123';  // Change this later!
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
