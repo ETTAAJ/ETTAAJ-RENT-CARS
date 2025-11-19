@@ -31,39 +31,45 @@ function carImageUrl($filename): string
     return $path . $v;
 }
 
-/* ---------- 4. Card renderer (used for similar cars) ---------- */
+/* ---------- EXACT SAME CARD FROM YOUR INDEX.PHP (100% CLONE) ---------- */
 function renderCarCard($car, $index = 0): string
 {
-    $baseImg = !empty($car['image'])
-        ? 'uploads/' . basename($car['image'])
-        : 'https://via.placeholder.com/600x338/36454F/FFFFFF?text=' . urlencode($car['name']);
+    // DEFAULT: beautiful placeholder with car name
+    $imgUrl = 'https://via.placeholder.com/600x338/36454F/FFFFFF?text=' . urlencode($car['name']);
 
-    $cacheBuster = '';
-    $fullPath    = $_SERVER['DOCUMENT_ROOT'] . '/' . $baseImg;
-    if (file_exists($fullPath)) $cacheBuster = '?v=' . filemtime($fullPath);
-    $imgUrl = $baseImg . $cacheBuster;
+    // ONLY if there is a real image → try to use it + cache busting
+    if (!empty($car['image']) && is_string($car['image'])) {
+        $filename   = basename($car['image']);
+        $relative   = 'uploads/' . $filename;
+        $fullPath   = $_SERVER['DOCUMENT_ROOT'] . '/' . $relative;
+
+        if (file_exists($fullPath)) {
+            $imgUrl = $relative . '?v=' . filemtime($fullPath);
+        } else {
+            $imgUrl = $relative;
+        }
+    }
 
     $delay = 100 + ($index % 8) * 80;
     ob_start(); ?>
     <div data-aos="fade-up" data-aos-delay="<?= $delay ?>" data-aos-duration="700"
-         class="group relative bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl 
-                hover:shadow-[var(--gold)]/20 transition-all duration-500 transform hover:-translate-y-2 
-                hover:scale-[1.02] border border-border flex flex-col h-full">
-
+         class="group relative bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-gold/20
+                transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]
+                border border-border flex flex-col h-full">
+        <!-- Image -->
         <div class="relative w-full pt-[56.25%] bg-card-dark overflow-hidden border-b border-border">
-            <img src="<?= htmlspecialchars($imgUrl) ?>"
-                 alt="<?= htmlspecialchars($car['name']) ?>"
-                 class="absolute inset-0 w-full h-full object-cover object-center 
-                        transition-transform duration-500 group-hover:scale-105"
-                 onerror="this.onerror=null;this.src='https://via.placeholder.com/600x338/36454F/FFFFFF?text=No+Image';
+            <img src="<?= htmlspecialchars($imgUrl, ENT_QUOTES) ?>"
+                 alt="<?= htmlspecialchars($car['name']) ?> - ETTAAJ RENT CARS"
+                 class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/600x338/36454F/FFFFFF?text=No+Image';
                           this.classList.add('object-contain','p-8');">
         </div>
-
+        <!-- Card Body -->
         <div class="px-5 pb-5 sm:px-6 sm:pb-6 flex-1 flex flex-col bg-card">
             <h3 class="text-xl sm:text-2xl font-extrabold text-primary mb-2 text-center line-clamp-1">
                 <?= htmlspecialchars($car['name']) ?>
             </h3>
-
+            <!-- Seats & Bags -->
             <div class="flex justify-center gap-6 sm:gap-8 text-muted mb-4 text-xs sm:text-sm">
                 <div class="flex flex-col items-center">
                     <svg class="w-5 h-5 mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20">
@@ -78,7 +84,7 @@ function renderCarCard($car, $index = 0): string
                     <span class="font-medium text-primary"><?= (int)$car['bags'] ?> Bags</span>
                 </div>
             </div>
-
+            <!-- Gear & Fuel -->
             <div class="flex justify-center gap-4 text-xs text-muted mb-5 font-medium">
                 <span class="px-3 py-1 bg-card-dark rounded-full text-primary border border-border">
                     <?= htmlspecialchars($car['gear']) ?>
@@ -87,7 +93,7 @@ function renderCarCard($car, $index = 0): string
                     <?= htmlspecialchars($car['fuel']) ?>
                 </span>
             </div>
-
+            <!-- Price -->
             <div class="flex flex-col items-center mt-4 mb-3">
                 <div class="flex items-baseline gap-2">
                     <span class="text-4xl sm:text-5xl font-extrabold text-primary">
@@ -95,7 +101,8 @@ function renderCarCard($car, $index = 0): string
                     </span>
                     <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-primary 
                                  bg-gradient-to-r from-gold to-yellow-500 rounded-full shadow-lg animate-pulse">
-                        <span>MAD</span><span>/day</span>
+                        <span>MAD</span>
+                        <span>/day</span>
                     </span>
                 </div>
                 <div class="flex gap-3 mt-3 text-xs font-medium">
@@ -107,7 +114,7 @@ function renderCarCard($car, $index = 0): string
                     </span>
                 </div>
             </div>
-
+            <!-- CTA -->
             <div class="mt-auto">
                 <a href="car-detail.php?id=<?= (int)$car['id'] ?>"
                    class="block w-full text-center bg-gradient-to-r from-gold to-yellow-500 
@@ -122,27 +129,27 @@ function renderCarCard($car, $index = 0): string
     return ob_get_clean();
 }
 ?>
+
 <?php include 'header.php'; ?>
 
 <main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)]">
   <div class="grid md:grid-cols-2 gap-10 mb-16">
-    <!-- ---------- LEFT: IMAGE ---------- -->
+    <!-- LEFT: MAIN IMAGE -->
     <div data-aos="fade-right" data-aos-duration="800">
       <?php
-      $imgSrc     = carImageUrl($car['image']);
+      $imgSrc = carImageUrl($car['image']);
       $placeholder = 'https://via.placeholder.com/800x450/36454F/FFFFFF?text=' . urlencode($car['name']);
-      $src        = $imgSrc ?: $placeholder;
+      $src = $imgSrc ?: $placeholder;
       ?>
       <div class="relative w-full pt-[56.25%] bg-card-dark rounded-3xl overflow-hidden shadow-2xl border border-border">
         <img src="<?= $src ?>"
              alt="<?= htmlspecialchars($car['name']) ?>"
              class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
-             onerror="this.onerror=null;this.src='https://via.placeholder.com/800x450/36454F/FFFFFF?text=No+Image';
-                      this.classList.add('object-contain','p-8');">
+             onerror="this.onerror=null;this.src='https://via.placeholder.com/800x450/36454F/FFFFFF?text=No+Image';this.classList.add('object-contain','p-8');">
       </div>
     </div>
 
-    <!-- ---------- RIGHT: INFO ---------- -->
+    <!-- RIGHT: INFO -->
     <div data-aos="fade-left" data-aos-duration="800" class="flex flex-col justify-center">
       <h1 class="text-3xl sm:text-4xl font-extrabold text-primary mb-4">
         <?= htmlspecialchars($car['name']) ?>
@@ -169,7 +176,7 @@ function renderCarCard($car, $index = 0): string
         </div>
       </div>
 
-      <!-- ---------- PRICE BOX ---------- -->
+      <!-- PRICE BOX -->
       <div class="bg-card/90 backdrop-blur-md p-6 rounded-3xl shadow-lg border border-border mb-8">
         <h3 class="font-bold text-xl text-primary mb-4 text-center">Rental Prices</h3>
         <div class="flex flex-col items-center">
@@ -202,7 +209,7 @@ function renderCarCard($car, $index = 0): string
     </div>
   </div>
 
-  <!-- ---------- SIMILAR CARS (horizontal carousel) ---------- -->
+  <!-- SIMILAR CARS – NOW USING EXACT SAME CARD AS INDEX.PHP -->
   <?php if (!empty($similarCars)): ?>
   <section class="mt-20" data-aos="fade-up" data-aos-delay="200">
     <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-8 text-center">
@@ -254,10 +261,7 @@ function renderCarCard($car, $index = 0): string
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script>
-  /* Initialise AOS – runs once, but we also refresh on theme change */
   AOS.init({ once: true, duration: 800, easing: 'ease-out-quart' });
-
-  /* If the user toggles dark/light after the page loaded, re-run AOS */
   const observer = new MutationObserver(() => AOS.refreshHard());
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 </script>
@@ -265,7 +269,6 @@ function renderCarCard($car, $index = 0): string
 <style>
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
-
   @media (max-width: 768px) {
     .overflow-x-auto { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .overflow-x-auto > div > div { scroll-snap-align: start; }

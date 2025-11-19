@@ -1,11 +1,10 @@
 <?php
 require 'config.php';
 
-/* ---------- 1. Get Car ---------- */
-$id   = intval($_GET['id'] ?? 0);
+$id = intval($_GET['id'] ?? 0);
 $stmt = $pdo->prepare("SELECT * FROM cars WHERE id = ?");
 $stmt->execute([$id]);
-$car = $stmt->fetch(PDO::FETCH_ASSOC);  // Fixed: PDO::FETCH_ASSOC
+$car = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$car) {
     header("Location: index.php");
@@ -13,178 +12,129 @@ if (!$car) {
 }
 
 $minDays     = 3;
-$pricePerDay = $car['price_day'];
-
-/* ---------- 2. Image helper ---------- */
-function carImageUrl($filename): string
-{
-    if (empty($filename)) return '';
-    $path = 'uploads/' . basename($filename);
-    $full = $_SERVER['DOCUMENT_ROOT'] . '/' . $path;
-    $v    = file_exists($full) ? '?v=' . filemtime($full) : '';
-    return $path . $v;
-}
+$pricePerDay = (float)$car['price_day'];
 ?>
+
 <?php include 'header.php'; ?>
 
-<main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)]">
-  <div class="text-center mb-12" data-aos="fade-up">
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-500 mb-3">
+<style>
+  :root { --input-color: #000000; }
+  .dark, [data-theme="dark"] { --input-color: #FFFFFF; }
+
+  input {
+    color: var(--input-color) !important;
+    -webkit-text-fill-color: var(--input-color) !important;
+  }
+  input::placeholder { color: #666 !important; opacity: 0.7; }
+  input::-webkit-datetime-edit,
+  input::-webkit-datetime-edit-fields-wrapper,
+  input::-webkit-datetime-edit-text,
+  input::-webkit-datetime-edit-month-field,
+  input::-webkit-datetime-edit-day-field,
+  input::-webkit-datetime-edit-year-field {
+    color: var(--input-color) !important;
+  }
+
+  .whatsapp-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+  .whatsapp-btn:hover { background: linear-gradient(135deg, #FFA500, #FF8C00) !important; transform: scale(1.05); }
+  .whatsapp-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  @keyframes pulse-slow { 0%,100% { opacity: 1; } 50% { opacity: 0.95; } }
+  .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
+
+  @keyframes shine { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+  .animate-shine { background-position: 0% center; animation: shine 6s linear infinite; }
+</style>
+
+<main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)] text-[var(--text-primary)]">
+  <div class="text-center mb-16" data-aos="fade-up">
+    <!-- ULTRA LUXURY GOLD TITLE -->
+    <h1 class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text 
+               bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 
+               animate-pulse-slow drop-shadow-2xl leading-tight">
       Complete Your Booking
     </h1>
-    <p class="text-muted text-lg">Secure your premium ride in just a few steps</p>
+    <p class="mt-6 text-xl sm:text-2xl font-medium text-amber-400 drop-shadow-lg tracking-wider">
+      <span class="inline-block animate-shine bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 
+                   bg-[length:200%_auto] bg-clip-text text-transparent">
+        Premium Service • Instant Confirmation • 24/7 Support
+      </span>
+    </p>
   </div>
 
   <div class="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
-    <!-- ========== LEFT: PREMIUM CAR CARD ========== -->
-    <div data-aos="fade-right" data-aos-duration="900" class="group">
-      <div class="relative bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-border p-6 h-full flex flex-col overflow-hidden
-                  before:absolute before:inset-0 before:bg-gradient-to-br before:from-gold/5 before:to-transparent before:rounded-3xl before:-z-10
-                  transition-all duration-500 hover:shadow-[0_20px_60px_rgba(255,215,0,0.15)] hover:-translate-y-1">
-        
-        <!-- Gold accent top bar -->
-        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold to-yellow-500 rounded-t-3xl"></div>
-
-        <h3 class="text-2xl sm:text-3xl font-extrabold text-primary mb-5 text-center relative z-10">
-          <?= htmlspecialchars($car['name']) ?>
-        </h3>
-
-        <!-- Car Image with zoom & glow -->
+    <!-- LEFT: CAR CARD -->
+    <div data-aos="fade-right" class="group">
+      <div class="bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-gold/30 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] border border-border">
         <?php
-        $imgSrc = carImageUrl($car['image']);
-        $placeholder = 'https://via.placeholder.com/800x450/36454F/FFFFFF?text=' . urlencode($car['name']);
-        $src = $imgSrc ?: $placeholder;
+        $imgUrl = !empty($car['image'])
+            ? 'uploads/' . basename($car['image']) . '?v=' . (file_exists($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) ? filemtime($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) : '')
+            : 'https://via.placeholder.com/800x450/1a1a1a/ffffff?text=' . urlencode($car['name']);
         ?>
-        <div class="relative w-full pt-[56.25%] bg-card-dark rounded-2xl overflow-hidden shadow-xl mb-6 border border-border group-hover:shadow-2xl transition-all">
-          <img src="<?= $src ?>"
-               alt="<?= htmlspecialchars($car['name']) ?>"
-               class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-               onerror="this.onerror=null;this.src='https://via.placeholder.com/800x450/36454F/FFFFFF?text=No+Image';this.classList.add('object-contain','p-8');">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative w-full pt-[56.25%] overflow-hidden border-b border-border">
+          <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($car['name']) ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
         </div>
-
-        <!-- Price Section -->
-        <div class="flex flex-col items-center mt-auto space-y-3">
-          <div class="flex items-baseline gap-3">
-            <span class="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-400">
-              <?= number_format($pricePerDay) ?>
-            </span>
-            <span class="inline-flex items-center gap-1 px-4 py-1.5 text-sm font-bold text-primary 
-                         bg-gradient-to-r from-gold/20 to-yellow-500/20 rounded-full border border-gold/30 backdrop-blur-sm">
-              <span>MAD</span><span class="text-xs">/day</span>
-            </span>
+        <div class="p-8 text-center">
+          <h3 class="text-3xl font-extrabold mb-6"><?= htmlspecialchars($car['name']) ?></h3>
+          <div class="grid grid-cols-2 gap-8 mb-8 text-[var(--text-primary)]">
+            <div><svg class="w-10 h-10 mx-auto mb-2 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg><p class="font-bold"><?= $car['seats'] ?> Seats</p></div>
+            <div><svg class="w-10 h-10 mx-auto mb-2 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg><p class="font-bold"><?= $car['bags'] ?> Bags</p></div>
           </div>
-          <p class="text-sm text-muted font-medium">
-            Minimum <span class="text-gold font-bold"><?= $minDays ?> days</span> required
-          </p>
+          <div class="flex justify-center gap-6 mb-8">
+            <span class="px-6 py-2 bg-card-dark rounded-full font-bold border border-border"><?= $car['gear'] ?></span>
+            <span class="px-6 py-2 bg-card-dark rounded-full font-bold border border-border"><?= $car['fuel'] ?></span>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-center gap-4">
+              <span class="text-6xl font-black"><?= number_format($car['price_day']) ?></span>
+              <span class="px-6 py-3 bg-gradient-to-r from-gold to-yellow-500 text-black font-bold rounded-full shadow-lg animate-pulse">MAD/day</span>
+            </div>
+            <p class="text-[var(--text-muted)] pt-4 border-t border-border/50">
+              Minimum rental: <span class="text-gold font-bold"><?= $minDays ?> days</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ========== RIGHT: LUXURY BOOKING FORM ========== -->
-    <div data-aos="fade-left" data-aos-duration="900">
-      <form id="booking-form" action="booking-process.php" method="POST"
-            class="bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-border p-6 sm:p-8 space-y-7 relative overflow-hidden
-                   before:absolute before:inset-0 before:bg-gradient-to-br before:from-gold/5 before:to-transparent before:rounded-3xl before:-z-10">
-
+    <!-- RIGHT: BOOKING FORM -->
+    <div data-aos="fade-left">
+      <form id="booking-form" class="bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-border p-8 space-y-7">
         <input type="hidden" name="car_id" value="<?= $car['id'] ?>">
 
-        <!-- Form Fields with Floating Labels -->
-        <div class="space-y-6">
-          <!-- Pickup Date -->
-          <div class="relative">
-            <input type="date" name="pickup" id="pickup" required
-                   class="peer w-full p-4 bg-card-dark/80 border border-border text-primary rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition text-sm placeholder-transparent">
-            <label for="pickup" class="absolute left-4 -top-2.5 bg-card-dark px-2 text-xs font-semibold text-gold transition-all 
-                       peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-gold">
-              Pickup Date
-            </label>
-            <svg class="absolute right-4 top-4 w-5 h-5 text-gold pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-          </div>
-
-          <!-- Return Date -->
-          <div class="relative">
-            <input type="date" name="return" id="return" required
-                   class="peer w-full p-4 bg-card-dark/80 border border-border text-primary rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition text-sm placeholder-transparent">
-            <label for="return" class="absolute left-4 -top-2.5 bg-card-dark px-2 text-xs font-semibold text-gold transition-all 
-                       peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-gold">
-              Return Date
-            </label>
-            <svg class="absolute right-4 top-4 w-5 h-5 text-gold pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <p id="date-error" class="text-red-400 text-xs mt-2 hidden">
-              Return date must be at least <?= $minDays ?> days after pickup.
-            </p>
-          </div>
-
-          <!-- Progress Bar (Days) -->
-          <div id="progress-container" class="hidden">
-            <div class="flex justify-between text-xs text-muted mb-1">
-              <span>Duration</span>
-              <span id="days-label">0 days</span>
-            </div>
-            <div class="w-full bg-card-dark/50 rounded-full h-2 overflow-hidden">
-              <div id="progress-bar" class="h-full bg-gradient-to-r from-gold to-yellow-500 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <!-- Animated Total Price -->
-          <div class="bg-gradient-to-r from-gold/10 to-yellow-500/10 p-6 rounded-2xl border border-gold/20 backdrop-blur-sm">
-            <p class="text-sm font-semibold text-muted mb-2">Total Price</p>
-            <p id="total-price" class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-400">
-              MAD0
-            </p>
-            <p id="days-count" class="text-sm text-muted mt-1"></p>
-          </div>
-
-          <!-- Customer Info -->
-          <div class="grid sm:grid-cols-2 gap-5">
-            <div class="relative">
-              <input type="text" name="name" required placeholder=" "
-                     class="peer w-full p-4 bg-card-dark/80 border border-border text-primary rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition text-sm">
-              <label class="absolute left-4 -top-2.5 bg-card-dark px-2 text-xs font-semibold text-gold transition-all 
-                         peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-gold">
-                Full Name
-              </label>
-            </div>
-            <div class="relative">
-              <input type="email" name="email" required placeholder=" "
-                     class="peer w-full p-4 bg-card-dark/80 border border-border text-primary rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition text-sm">
-              <label class="absolute left-4 -top-2.5 bg-card-dark px-2 text-xs font-semibold text-gold transition-all 
-                         peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-gold">
-                Email Address
-              </label>
-            </div>
-          </div>
-
-          <div class="relative">
-            <input type="tel" name="phone" required placeholder=" "
-                   class="peer w-full p-4 bg-card-dark/80 border border-border text-primary rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition text-sm">
-            <label class="absolute left-4 -top-2.5 bg-card-dark px-2 text-xs font-semibold text-gold transition-all 
-                       peer-placeholder-shown:text-sm peer-placeholder-shown:text-muted peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-gold">
-              Phone Number
-            </label>
-          </div>
-
-          <!-- Luxury Submit Button -->
-          <button type="submit"
-                  class="relative w-full bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400 
-                         text-primary font-bold text-lg py-5 rounded-2xl shadow-2xl transition-all duration-300 
-                         transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
-                         overflow-hidden group"
-                  id="submit-btn" disabled>
-            <span class="relative z-10 flex items-center justify-center gap-2">
-              <span>Confirm Booking</span>
-              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </span>
-            <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          </button>
+        <div class="relative">
+          <input type="date" name="pickup" id="pickup" required class="peer w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition">
+          <label class="absolute left-4 -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-muted)] peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs transition-all pointer-events-none">
+            Pickup Date
+          </label>
         </div>
+
+        <div class="relative">
+          <input type="date" name="return" id="return" required class="peer w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition">
+          <label class="absolute left-4 -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-muted)] peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs transition-all pointer-events-none">
+            Return Date
+          </label>
+          <p id="date-error" class="text-red-400 text-sm mt-2 hidden">Return date must be at least <?= $minDays ?> days after pickup.</p>
+        </div>
+
+        <div class="bg-gradient-to-r from-gold/10 to-yellow-500/10 p-7 rounded-2xl border border-gold/30 text-center">
+          <p class="text-gold font-bold mb-3 text-lg">Total Estimated Price</p>
+          <p id="total-price" class="text-5xl font-black text-[var(--text-primary)]">MAD0</p>
+          <p id="days-count" class="text-[var(--text-muted)] mt-2 text-lg"></p>
+        </div>
+
+        <input type="text" name="name" required placeholder="Full Name" class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
+        <input type="email" name="email" required placeholder="Email Address" class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
+        <input type="tel" name="phone" required placeholder="Phone (WhatsApp)" class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
+
+        <button type="submit" id="submit-btn" disabled class="whatsapp-btn w-full py-6 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center gap-4 text-xl font-bold">
+          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.134.297-.347.446-.52.149-.174.198-.297.297-.446.099-.148.05-.273-.024-.385-.074-.112-.67-1.62-.92-2.22-.246-.594-.495-.59-.67-.599-.174-.008-.371-.008-.569-.008-.197 0-.52.074-.792.372-.273.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.558 5.745 8.623 8.05.297.149.595.223.893.298.297.074.595.05.893-.025.297-.074 1.255-.52 1.43-.966.173-.446.173-.82.124-.966-.05-.148-.198-.297-.446-.446zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+          Send Booking via WhatsApp
+        </button>
       </form>
     </div>
   </div>
@@ -194,106 +144,77 @@ function carImageUrl($filename): string
 
 <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
 <script>
-  // === AOS + Theme Sync ===
-  AOS.init({ once: true, duration: 800, easing: 'ease-out-quart' });
-  new MutationObserver(() => AOS.refreshHard()).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  AOS.init({ once: true, duration: 800 });
 
-  // === Booking Logic ===
-  const pickupInput   = document.getElementById('pickup');
-  const returnInput   = document.getElementById('return');
-  const totalPriceEl  = document.getElementById('total-price');
-  const daysCountEl   = document.getElementById('days-count');
-  const daysLabelEl   = document.getElementById('days-label');
-  const progressBar   = document.getElementById('progress-bar');
-  const progressCont  = document.getElementById('progress-container');
-  const errorEl       = document.getElementById('date-error');
-  const submitBtn     = document.getElementById('submit-btn');
+  // Auto color switch
+  function updateColors() {
+    const isDark = document.documentElement.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+    document.documentElement.style.setProperty('--input-color', isDark ? '#FFFFFF' : '#000000');
+  }
+  updateColors();
+  new MutationObserver(updateColors).observe(document.documentElement, { attributes: true });
 
+  // Elements
+  const pickup = document.getElementById('pickup');
+  const ret = document.getElementById('return');
+  const totalEl = document.getElementById('total-price');
+  const daysEl = document.getElementById('days-count');
+  const error = document.getElementById('date-error');
+  const btn = document.getElementById('submit-btn');
+  const form = document.getElementById('booking-form');
   const pricePerDay = <?= $pricePerDay ?>;
-  const minDays     = <?= $minDays ?>;
+  const minDays = <?= $minDays ?>;
 
-  let currentTotal = 0;
-
-  function animateValue(obj, start, end, duration) {
-    let startTime = null;
-    const step = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const value = Math.floor(progress * (end - start) + start);
-      obj.textContent = `MAD${value.toLocaleString()}`;
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
-
-  function validateDates() {
-    const pickup = new Date(pickupInput.value);
-    const ret    = new Date(returnInput.value);
-
-    if (!pickupInput.value || !returnInput.value) {
-      submitBtn.disabled = true;
-      progressCont.classList.add('hidden');
+  function updateTotal() {
+    if (!pickup.value || !ret.value) { btn.disabled = true; return; }
+    const days = Math.ceil((new Date(ret.value) - new Date(pickup.value)) / 86400000);
+    if (days < minDays || days <= 0) {
+      error.classList.remove('hidden');
+      btn.disabled = true;
+      totalEl.textContent = 'MAD0';
+      daysEl.textContent = '';
       return;
     }
-
-    const diffTime = ret - pickup;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < minDays || diffDays < 0) {
-      errorEl.classList.remove('hidden');
-      submitBtn.disabled = true;
-      totalPriceEl.textContent = 'MAD0';
-      daysCountEl.textContent = '';
-      progressCont.classList.add('hidden');
-      return;
-    }
-
-    errorEl.classList.add('hidden');
-    const total = diffDays * pricePerDay;
-
-    // Animate total
-    if (total !== currentTotal) {
-      animateValue(totalPriceEl, currentTotal, total, 600);
-      currentTotal = total;
-    }
-
-    // Update days
-    daysCountEl.textContent = `${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    daysLabelEl.textContent = `${diffDays} day${diffDays > 1 ? 's' : ''}`;
-
-    // Progress bar
-    const progress = Math.min((diffDays / 30) * 100, 100);
-    progressBar.style.width = `${progress}%`;
-    progressCont.classList.remove('hidden');
-
-    submitBtn.disabled = false;
+    error.classList.add('hidden');
+    const total = days * pricePerDay;
+    totalEl.textContent = 'MAD' + total.toLocaleString();
+    daysEl.textContent = days + ' day' + (days > 1 ? 's' : '');
+    btn.disabled = false;
   }
 
-  // Set min return date
-  pickupInput.addEventListener('change', () => {
-    const minReturn = new Date(pickupInput.value);
+  pickup.addEventListener('change', () => {
+    const minReturn = new Date(pickup.value);
     minReturn.setDate(minReturn.getDate() + minDays);
-    returnInput.min = minReturn.toISOString().split('T')[0];
-    validateDates();
+    ret.min = minReturn.toISOString().split('T')[0];
+    updateTotal();
+  });
+  ret.addEventListener('change', updateTotal);
+
+  // SUBMIT + CLEAR FORM AFTER SENDING
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const days = Math.ceil((new Date(ret.value) - new Date(pickup.value)) / 86400000);
+    const total = days * pricePerDay;
+    const msg = `NEW BOOKING - ETTAAJ RENT CARS\n\nCar: <?= htmlspecialchars($car['name']) ?>\nPickup: ${pickup.value}\nReturn: ${ret.value}\nDuration: ${days} days\nTotal: MAD${total.toLocaleString()}\n\nName: ${form.name.value}\nEmail: ${form.email.value}\nPhone: ${form.phone.value}\n\nPlease confirm availability!`;
+
+    window.open(`https://wa.me/212772331080?text=${encodeURIComponent(msg)}`, '_blank');
+
+    // SUCCESS MESSAGE
+    alert('Thank you! Your booking has been sent via WhatsApp. We will contact you immediately!');
+
+    // CLEAR ALL FIELDS
+    form.reset();
+    totalEl.textContent = 'MAD0';
+    daysEl.textContent = '';
+    btn.disabled = true;
+    error.classList.add('hidden');
   });
 
-  returnInput.addEventListener('change', validateDates);
-
-  // Init
   document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    pickupInput.min = today;
-    validateDates();
+    pickup.min = new Date().toISOString().split('T')[0];
   });
 </script>
-
-<style>
-  input::placeholder { color: transparent; }
-  input:focus::placeholder { color: #9CA3AF; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-</style>
 </body>
 </html>
