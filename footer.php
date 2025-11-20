@@ -68,7 +68,7 @@
             </svg>
             <div>
               <span class="block text-sm text-gray-500">Location</span>
-              <a href="https://maps.google.com/?q=Marrakech,Morocco" target="_blank" class="text-gold hover:underline font-semibold text-base">
+              <a href="https://maps.app.goo.gl/qNu7pL2mrhwVVxGp6" target="_blank" class="text-gold hover:underline font-semibold text-base">
                 Marrakech, Morocco
               </a>
             </div>

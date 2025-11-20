@@ -156,6 +156,7 @@
   $stmt->execute($params);
   $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en" class="transition-colors duration-300">
 <head>
@@ -206,7 +207,7 @@
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "ETTAAJ RENT CARS",
+    "name": "ettaaj rent cars",
     "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
     "url": "https://www.ettaajrentcars.ma",
     "telephone": "+212772331080",
@@ -344,7 +345,10 @@
                     </h1>
                     <p class="text-gold text-lg font-semibold mt-1 flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
-                        +212 772 331 080
+                        <a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%20RENT%20CARS%2C%20I%20want%20to%20rent%20a%20car!" 
+                            target="_blank" class="text-gold hover:underline font-semibold text-base">
+                            +212 772 331 080
+                        </a>
                     </p>
                 </div>
             </div>
