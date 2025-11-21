@@ -1,44 +1,48 @@
 <?php
   require 'config.php';
-  /* -------------------------------------------------
-     1. Build Query - UNCHANGED
-     ------------------------------------------------- */
+
+  // ================================================
+  // 1. Build Query
+  // ================================================
   $search = trim($_GET['search'] ?? '');
-  $gear = $_GET['gear'] ?? '';
-  $fuel = $_GET['fuel'] ?? '';
-  $sort = $_GET['sort'] ?? 'low';
-  $where = [];
+  $gear   = $_GET['gear'] ?? '';
+  $fuel   = $_GET['fuel'] ?? '';
+  $sort   = $_GET['sort'] ?? 'low';
+
+  $where  = [];
   $params = [];
+
   if ($search !== '') {
-      $where[] = "name LIKE ?";
+      $where[]  = "name LIKE ?";
       $params[] = "%$search%";
   }
   if ($gear !== '' && in_array($gear, ['Manual', 'Automatic'])) {
-      $where[] = "gear = ?";
+      $where[]  = "gear = ?";
       $params[] = $gear;
   }
   if ($fuel !== '' && in_array($fuel, ['Diesel', 'Petrol'])) {
-      $where[] = "fuel = ?";
+      $where[]  = "fuel = ?";
       $params[] = $fuel;
   }
+
   $order = ($sort === 'high') ? 'price_day DESC' : 'price_day ASC';
-  $sql = "SELECT * FROM cars";
+  $sql   = "SELECT * FROM cars";
   if (!empty($where)) {
       $sql .= " WHERE " . implode(' AND ', $where);
   }
   $sql .= " ORDER BY $order";
 
-  /* -------------------------------------------------
-     2. renderCarCard() – ONLY IMAGE FIX (unchanged)
-     ------------------------------------------------- */
+  // ================================================
+  // 2. Render Car Card Function
+  // ================================================
   function renderCarCard($car, $index = 0): string
   {
       $imgUrl = 'https://via.placeholder.com/600x338/36454F/FFFFFF?text=' . urlencode($car['name']);
 
       if (!empty($car['image']) && is_string($car['image'])) {
-          $filename   = basename($car['image']);
-          $relative   = 'uploads/' . $filename;
-          $fullPath   = $_SERVER['DOCUMENT_ROOT'] . '/' . $relative;
+          $filename = basename($car['image']);
+          $relative = 'uploads/' . $filename;
+          $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/' . $relative;
 
           if (file_exists($fullPath)) {
               $imgUrl = $relative . '?v=' . filemtime($fullPath);
@@ -55,41 +59,39 @@
                   border border-border flex flex-col h-full">
           <div class="relative w-full pt-[56.25%] bg-card-dark overflow-hidden border-b border-border">
               <img src="<?= htmlspecialchars($imgUrl, ENT_QUOTES) ?>"
-                   alt="<?= htmlspecialchars($car['name']) ?> - Car Rental Marrakech Airport | ETTAAJ Rent Cars"
+                   alt="<?= htmlspecialchars($car['name']) ?> - ETTAAJ Rent Cars Marrakech"
                    class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                   onerror="this.onerror=null; this.src='https://via.placeholder.com/600x338/36454F/FFFFFF?text=No+Image';
-                            this.classList.add('object-contain','p-8');">
+                   onerror="this.onerror=null;this.src='https://via.placeholder.com/600x338/36454F/FFFFFF?text=No+Image';this.classList.add('object-contain','p-8');">
           </div>
+
           <div class="px-5 pb-5 sm:px-6 sm:pb-6 flex-1 flex flex-col bg-card">
               <h3 class="text-xl sm:text-2xl font-extrabold text-primary mb-2 text-center line-clamp-1">
                   <?= htmlspecialchars($car['name']) ?>
               </h3>
+
               <div class="flex justify-center gap-6 sm:gap-8 text-muted mb-4 text-xs sm:text-sm">
                   <div class="flex flex-col items-center">
-                      <svg class="w-5 h-5 mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-                      </svg>
+                      <svg class="w-5 h-5 mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
                       <span class="font-medium text-primary"><?= (int)$car['seats'] ?> Seats</span>
                   </div>
                   <div class="flex flex-col items-center">
-                      <svg class="w-5 h-5 mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/>
-                      </svg>
+                      <svg class="w-5 h-5 mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
                       <span class="font-medium text-primary"><?= (int)$car['bags'] ?> Bags</span>
                   </div>
               </div>
+
               <div class="flex justify-center gap-4 text-xs text-muted mb-5 font-medium">
                   <span class="px-3 py-1 bg-card-dark rounded-full text-primary border border-border"><?= htmlspecialchars($car['gear']) ?></span>
                   <span class="px-3 py-1 bg-card-dark rounded-full text-primary border border-border"><?= htmlspecialchars($car['fuel']) ?></span>
               </div>
+
               <div class="flex flex-col items-center mt-4 mb-3">
                   <div class="flex items-baseline gap-2">
                       <span class="text-4xl sm:text-5xl font-extrabold text-primary">
                           <?= number_format((float)$car['price_day']) ?>
                       </span>
                       <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-primary bg-gradient-to-r from-gold to-yellow-500 rounded-full shadow-lg animate-pulse">
-                          <span>MAD</span>
-                          <span>/day</span>
+                          MAD <span>/day</span>
                       </span>
                   </div>
                   <div class="flex gap-3 mt-3 text-xs font-medium">
@@ -101,6 +103,7 @@
                       </span>
                   </div>
               </div>
+
               <div class="mt-auto">
                   <a href="car-detail.php?id=<?= (int)$car['id'] ?>"
                      class="block w-full text-center bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400
@@ -115,262 +118,210 @@
       return ob_get_clean();
   }
 
-  /* -------------------------------------------------
-     3. AJAX Response - UNCHANGED
-     ------------------------------------------------- */
+  // ================================================
+  // 3. AJAX Response
+  // ================================================
   if (isset($_GET['ajax']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
-      try {
-          $stmt = $pdo->prepare($sql);
-          $stmt->execute($params);
-          $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          $html = '';
-          foreach ($cars as $i => $c) {
-              $html .= renderCarCard($c, $i);
-          }
-          header('Content-Type: application/json; charset=utf-8');
-          echo json_encode(['html' => $html, 'count' => count($cars)]);
-          exit;
-      } catch (Throwable $e) {
-          http_response_code(500);
-          header('Content-Type: application/json; charset=utf-8');
-          echo json_encode([
-              'html' => '<p class="col-span-full text-center text-red-400">Server error.</p>',
-              'count' => 0
-          ]);
-          exit;
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute($params);
+      $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $html = '';
+      foreach ($cars as $i => $c) {
+          $html .= renderCarCard($c, $i);
       }
+
+      header('Content-Type: application/json; charset=utf-8');
+      echo json_encode(['html' => $html, 'count' => count($cars)]);
+      exit;
   }
 
-  /* -------------------------------------------------
-     4. Normal Page Load - UNCHANGED
-     ------------------------------------------------- */
+  // ================================================
+  // 4. Normal Page Load
+  // ================================================
   $stmt = $pdo->prepare($sql);
   $stmt->execute($params);
   $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-300">
+<html lang="en" class="scroll-smooth">
 <head>
-  <!-- Primary Meta Tags - FULLY OPTIMIZED FOR MARRAKECH -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Car Rental Marrakech Airport | ETTAAJ Rent Cars – No Deposit, Cheap & Luxury</title>
-  <meta name="description" content="Best car rental in Marrakech Airport (RAK). Cheap rates from 250 MAD, no deposit, luxury cars, free airport delivery 24/7. Instant WhatsApp booking: +212 772 331 080" />
-  <meta name="keywords" content="car rental in marrakech airport, cheap car rental in marrakech, best car rental in marrakech, car rental in marrakech without deposit, car rental marrakech no deposit, luxury car rental in marrakech, car rental marrakech gueliz, car rental companies in marrakech, car rental agency marrakech, car rental marrakech to fes, euro car rental in marrakech, car rental in marrakech reddit" />
-  <meta name="author" content="ETTAAJ Rent Cars" />
-  <meta name="robots" content="index, follow" />
-  <meta name="language" content="en" />
-  <meta name="geo.region" content="MA" />
-  <meta name="geo.placename" content="Marrakech" />
-  <meta name="geo.position" content="31.6069;-8.0363" />
-  <meta name="ICBM" content="31.6069, -8.0363" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Rental Marrakech Airport | ETTAAJ Rent Cars – No Deposit, From 250 MAD/day</title>
+  <meta name="description" content="Best car rental Marrakech Airport. No deposit, free delivery 24/7, luxury & cheap cars. WhatsApp +212 772 331 080">
+  <link rel="canonical" href="https://www.ettaajrentcars.ma<?php echo $_SERVER['REQUEST_URI']; ?>">
+  <link rel="icon" href="pub_img/GoldCar.png">
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://www.ettaajrentcars.ma<?php echo $_SERVER['REQUEST_URI']; ?>" />
-
-  <!-- FAVICON -->
-  <link rel="icon" href="pub_img/GoldCar.png" type="image/png" sizes="512x512">
-  <link rel="icon" href="pub_img/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="pub_img/GoldCar.png">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Car Rental Marrakech Airport | ETTAAJ Rent Cars – No Deposit & Luxury" />
-  <meta property="og:description" content="Cheap car rental in Marrakech Airport from 250 MAD/day. No deposit, free delivery, 24/7 support. Book via WhatsApp +212 772 331 080" />
-  <meta property="og:url" content="https://www.ettaajrentcars.ma<?php echo $_SERVER['REQUEST_URI']; ?>" />
-  <meta property="og:site_name" content="ETTAAJ Rent Cars" />
-  <meta property="og:image" content="https://www.ettaajrentcars.ma/pub_img/og-marrakech.jpg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Best Car Rental in Marrakech Airport – ETTAAJ Rent Cars" />
-  <meta name="twitter:description" content="No deposit, cheap & luxury cars. Free airport delivery. WhatsApp +212 772 331 080" />
-  <meta name="twitter:image" content="https://www.ettaajrentcars.ma/pub_img/og-marrakech.jpg" />
-
-  <!-- Marrakech Airport Business Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CarRentalService",
-    "name": "ETTAAJ Rent Cars - Car Rental Marrakech Airport",
-    "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
-    "url": "https://www.ettaajrentcars.ma",
-    "telephone": "+212772331080",
-    "priceRange": "MAD 250 - 5000",
-    "description": "Best car rental in Marrakech Airport with no deposit, free delivery, cheap and luxury cars available 24/7",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Marrakech Menara Airport (RAK)",
-      "addressLocality": "Marrakech",
-      "addressRegion": "Marrakech-Safi",
-      "postalCode": "40000",
-      "addressCountry": "MA"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 31.6069,
-      "longitude": -8.0363
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      "opens": "00:00",
-      "closes": "23:59"
-    },
-    "areaServed": {
-      "@type": "Place",
-      "name": "Marrakech, Gueliz, Menara Airport"
-    }
-  }
-  </script>
-
-  <!-- CSS & Fonts (unchanged) -->
+  <!-- Tailwind + Fonts + AOS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { gold: '#FFD700', 'gold-dark': '#E6C200' } } }
+      theme: { extend: { colors: { gold: '#FFD700' } } }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
   <style>
-    html { scroll-behavior: smooth; }
     :root {
       --bg: #36454F; --bg-dark: #2C3A44; --card: #36454F; --card-dark: #2C3A44;
       --border: #4A5A66; --primary: #FFFFFF; --muted: #D1D5DB; --gold: #FFD700;
     }
-    .light { --bg: #f8fafc; --bg-dark: #e2e8f0; --card: #ffffff; --card-dark: #f1f5f9;
-      --border: #cbd5e1; --primary: #1e293b; --muted: #64748b; --gold: #d97706; }
-    body { background-color: var(--bg); color: var(--primary); }
+    body { background-color: var(--bg); color: var(--primary); font-family: 'Inter', sans-serif; }
     .bg-card { background-color: var(--card); }
     .bg-card-dark { background-color: var(--card-dark); }
     .border-border { border-color: var(--border); }
     .text-primary { color: var(--primary); }
     .text-muted { color: var(--muted); }
     .text-gold { color: var(--gold); }
-    .spinner { width: 40px; height: 40px; border: 4px solid var(--bg-dark); border-top: 4px solid var(--gold);
-      border-radius: 50%; animation: spin 1s linear infinite; margin: 40px auto; }
+
+    .spinner { width: 40px; height: 40px; border: 4px solid var(--bg-dark); border-top: 4px solid var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 40px auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin-slow { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+    .animate-spin-slow { animation: spin-slow 30s linear infinite; }
   </style>
 </head>
 <body class="min-h-screen">
 
 <?php include 'header.php'; ?>
 
-<!-- HERO SECTION - FULLY OPTIMIZED FOR MARRAKECH -->
-<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1e293b] via-[#36454F] to-[#2C3A44]"
-         style="background-image: url('https://images.unsplash.com/photo-1599641954754-624d7f14f7e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
-    <div class="absolute inset-0 bg-black/70"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div data-aos="fade-down" data-aos-delay="300" class="mb-6">
-            <img src="pub_img/GoldCar.png" alt="ETTAAJ Rent Cars Marrakech" class="w-16 h-16 mx-auto rounded-full ring-4 ring-gold/50 shadow-2xl">
-            <h1 class="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent drop-shadow-2xl">
-                ETTAAJ RENT CARS MARRAKECH
-            </h1>
-            <p class="text-gold text-lg font-semibold mt-2">
-                <a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%2C%20I%20just%20landed%20at%20Marrakech%20Airport!" 
-                   class="hover:underline">+212 772 331 080 (WhatsApp 24/7)</a>
-            </p>
-        </div>
-        <h2 data-aos="zoom-in" data-aos-delay="600" class="text-4xl md:text-6xl lg:text-7xl font-bold text-primary mb-6">
-            Car Rental Marrakech Airport<br>
-            <span class="text-gold animate-pulse">No Deposit • From 250 MAD/day</span>
-        </h2>
-        <p data-aos="fade-up" data-aos-delay="900" class="text-lg md:text-xl text-muted mb-10 max-w-4xl mx-auto leading-relaxed">
-            Best car rental in Marrakech Airport • Free delivery at Menara (RAK) • Cheap, luxury & no deposit options • Instant booking
-        </p>
-        <div data-aos="fade-up" data-aos-delay="1200" class="flex flex-col sm:flex-row gap-5 justify-center">
-            <a href="https://wa.me/212772331080?text=Hello%20ETTAAJ%2C%20I%20need%20a%20car%20at%20Marrakech%20Airport!" 
-               class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg py-5 px-12 rounded-full shadow-2xl transform hover:scale-110 transition">
-                Book via WhatsApp Now
-            </a>
-            <a href="#cars" class="bg-white/10 backdrop-blur border-2 border-gold text-gold hover:bg-gold/20 font-bold text-lg py-5 px-12 rounded-full shadow-xl transform hover:scale-110 transition">
-                View All Cars
-            </a>
-        </div>
+<!-- ======================== HERO SECTION WITH ANIMATION ======================== -->
+<section class="relative overflow-hidden bg-[#36454F] isolate">
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-br from-gold/10 via-[#36454F] to-yellow-600/5"></div>
+    <div class="absolute inset-0 bg-gradient-to-tl from-[#2C3A44]/80 via-transparent to-gold/5"></div>
+    <div id="particles-js" class="absolute inset-0"></div>
+  </div>
+
+  <div class="absolute top-0 left-0 w-96 h-96 bg-gold/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 animate-ping"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-gold/30 to-transparent rounded-full blur-3xl animate-spin-slow"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 py-24 sm:py-32 lg:py-40 text-center">
+    <div data-aos="fade-up">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white mb-6 leading-tight">
+        Car Rental Marrakech Airport
+      </h1>
+      <p class="text-xl sm:text-2xl text-gray-200 max-w-4xl mx-auto mb-10">
+        No Deposit • Free Airport Delivery 24/7 • Luxury & Economy Cars • Instant Booking
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <a href="https://wa.me/212772331080?text=Hi, I want to rent a car at Marrakech Airport!"
+           target="_blank"
+           class="group inline-flex items-center gap-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-1.174-2.294-.174-.338-.434-.327-.672-.327-.227 0-.482.074-.735.174-.67.267-1.25.85-1.25 2.076 0 1.226.89 2.407 1.013 2.567.124.16 1.772 2.708 4.293 3.796 1.52.654 2.158.75 2.92.625.76-.124 2.03-.83 2.317-1.632.287-.802.287-1.49.2-1.632-.087-.15-.346-.25-.644-.3z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.132.547 4.135 1.507 5.987L0 24l6.2-1.625C8.002 23.227 9.973 23.773 12 23.773c6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+          Book on WhatsApp
+          <span class="group-hover:translate-x-2 transition-transform">→</span>
+        </a>
+
+        <a href="#cars" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur border border-gold/30 text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+          View All Cars
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </a>
+      </div>
+
+      <div class="mt-12 flex flex-wrap justify-center gap-8 text-gray-300">
+        <div class="flex items-center gap-2"><span class="text-gold">Check</span> No Hidden Fees</div>
+        <div class="flex items-center gap-2"><span class="text-gold">Check</span> Free Cancellation</div>
+        <div class="flex items-center gap-2"><span class="text-gold">Check</span> 24/7 Support</div>
+        <div class="flex items-center gap-2"><span class="text-gold">Check</span> Fully Insured</div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- Filters & Cars Section (unchanged logic) -->
-<section id="cars" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-bg">
-    <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-primary mb-4">Best Car Rental in Marrakech – Choose Your Vehicle</h2>
-        <p class="text-xl text-muted">Cheap car rental in Marrakech • Luxury car rental • No deposit • Gueliz & airport delivery</p>
-    </div>
-    <!-- Your existing filter form (100% unchanged) -->
-    <div data-aos="fade-up" class="bg-card-dark p-6 rounded-xl shadow-lg mb-8 border border-border">
-        <form id="filter-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <input type="text" id="search" placeholder="Search car (e.g. Dacia, Range Rover)..." value="<?= htmlspecialchars($search) ?>" class="p-4 bg-card border border-border text-primary placeholder-muted rounded-lg focus:ring-2 focus:ring-gold text-sm">
-            <select id="gear" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
-                <option value="">All Transmission</option>
-                <option value="Manual" <?= $gear === 'Manual' ? 'selected' : '' ?>>Manual</option>
-                <option value="Automatic" <?= $gear === 'Automatic' ? 'selected' : '' ?>>Automatic</option>
-            </select>
-            <select id="fuel" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
-                <option value="">All Fuel</option>
-                <option value="Diesel" <?= $fuel === 'Diesel' ? 'selected' : '' ?>>Diesel</option>
-                <option value="Petrol" <?= $fuel === 'Petrol' ? 'selected' : '' ?>>Petrol</option>
-            </select>
-            <select id="sort" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
-                <option value="low" <?= $sort === 'low' ? 'selected' : '' ?>>Price: Low to High</option>
-                <option value="high" <?= $sort === 'high' ? 'selected' : '' ?>>Price: High to Low</option>
-            </select>
-            <a href="?" class="bg-gold/20 hover:bg-gold/30 text-gold font-bold py-4 px-6 rounded-lg text-center">Clear Filters</a>
-        </form>
-    </div>
-    <p id="results-count" class="text-center text-muted text-lg mb-8"><?= count($cars) ?> vehicles available at Marrakech Airport</p>
-    <div id="cars-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        <?php foreach ($cars as $i => $c): ?>
-            <?= renderCarCard($c, $i) ?>
-        <?php endforeach; ?>
-    </div>
+<!-- ======================== CARS SECTION ======================== -->
+<section id="cars" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div data-aos="fade-up" class="bg-card-dark p-6 rounded-xl shadow-lg mb-8 border border-border">
+    <form id="filter-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <input type="text" id="search" placeholder="Search car..." value="<?= htmlspecialchars($search) ?>" class="p-4 bg-card border border-border text-primary placeholder-muted rounded-lg focus:ring-2 focus:ring-gold text-sm">
+      <select id="gear" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
+        <option value="">All Transmission</option>
+        <option value="Manual" <?= $gear==='Manual'?'selected':'' ?>>Manual</option>
+        <option value="Automatic" <?= $gear==='Automatic'?'selected':'' ?>>Automatic</option>
+      </select>
+      <select id="fuel" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
+        <option value="">All Fuel</option>
+        <option value="Diesel" <?= $fuel==='Diesel'?'selected':'' ?>>Diesel</option>
+        <option value="Petrol" <?= $fuel==='Petrol'?'selected':'' ?>>Petrol</option>
+      </select>
+      <select id="sort" class="p-4 bg-card border border-border text-primary rounded-lg focus:ring-2 focus:ring-gold text-sm">
+        <option value="low" <?= $sort==='low'?'selected':'' ?>>Low to High</option>
+        <option value="high" <?= $sort==='high'?'selected':'' ?>>High to Low</option>
+      </select>
+      <a href="?" class="bg-gold/20 hover:bg-gold/30 text-gold font-bold py-4 rounded-lg text-center">Clear</a>
+    </form>
+  </div>
+
+  <p id="results-count" class="text-center text-muted text-lg mb-8"><?= count($cars) ?> vehicles available</p>
+
+  <div id="cars-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <?php foreach ($cars as $i => $c): ?>
+      <?= renderCarCard($c, $i) ?>
+    <?php endforeach; ?>
+  </div>
 </section>
 
 <?php include 'footer.php'; ?>
 
-<!-- Scripts (100% unchanged) -->
+<!-- ======================== SCRIPTS ======================== -->
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script>
-    AOS.init({ once: true, duration: 800, easing: 'ease-out-quart' });
-    // Your existing AJAX filter script (exactly the same)
-    const els = { search: document.getElementById('search'), gear: document.getElementById('gear'), fuel: document.getElementById('fuel'), sort: document.getElementById('sort') };
-    const container = document.getElementById('cars-container');
-    const countEl = document.getElementById('results-count');
-    let debounceTimer = null;
-    let isLoading = false;
+  AOS.init({ once: true, duration: 800 });
 
-    const fetchCars = () => {
-        if (isLoading) return;
-        isLoading = true;
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const params = new URLSearchParams({
-                search: els.search.value.trim(),
-                gear: els.gear.value,
-                fuel: els.fuel.value,
-                sort: els.sort.value,
-                ajax: 1
-            });
-            container.innerHTML = '<div class="col-span-full flex justify-center"><div class="spinner"></div></div>';
-            fetch(`?${params}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(r => r.ok ? r.json() : Promise.reject())
-            .then(data => {
-                container.innerHTML = data.html || '<p class="col-span-full text-center text-muted">No cars found.</p>';
-                countEl.textContent = `${data.count} vehicles available at Marrakech Airport`;
-                AOS.refreshHard();
-            })
-            .catch(() => container.innerHTML = '<p class="col-span-full text-center text-red-400">Error loading cars.</p>')
-            .finally(() => isLoading = false);
-        }, 300);
-    };
+  // Particles animation in hero
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80, density: { enable: true, value_area: 800 } },
+      color: { value: "#FFD700" },
+      shape: { type: "circle" },
+      opacity: { value: 0.15, random: true },
+      size: { value: 4, random: true },
+      move: { enable: true, speed: 1, random: true, out_mode: "out" }
+    },
+    interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "repulse" } } },
+    retina_detect: true
+  });
 
-    els.search.addEventListener('input', fetchCars);
-    els.gear.addEventListener('change', fetchCars);
-    els.fuel.addEventListener('change', fetchCars);
-    els.sort.addEventListener('change', fetchCars);
+  // AJAX Filters
+  const els = { search: document.getElementById('search'), gear: document.getElementById('gear'), fuel: document.getElementById('fuel'), sort: document.getElementById('sort') };
+  const container = document.getElementById('cars-container');
+  const countEl = document.getElementById('results-count');
+  let isLoading = false;
+
+  const fetchCars = () => {
+    if (isLoading) return;
+    isLoading = true;
+
+    const params = new URLSearchParams({
+      search: els.search.value.trim(),
+      gear: els.gear.value,
+      fuel: els.fuel.value,
+      sort: els.sort.value,
+      ajax: 1
+    });
+
+    container.innerHTML = '<div class="col-span-full flex justify-center"><div class="spinner"></div></div>';
+
+    fetch(`?${params}`)
+      .then(r => r.json())
+      .then(data => {
+        container.innerHTML = data.html || '<p class="col-span-full text-center text-muted">No cars found.</p>';
+        countEl.textContent = `${data.count} vehicles available`;
+        AOS.refreshHard();
+      })
+      .catch(() => container.innerHTML = '<p class="col-span-full text-center text-red-400">Error.</p>')
+      .finally(() => isLoading = false);
+  };
+
+  els.search.addEventListener('input', () => { clearTimeout(window.debounce); window.debounce = setTimeout(fetchCars, 300); });
+  els.gear.addEventListener('change', fetchCars);
+  els.fuel.addEventListener('change', fetchCars);
+  els.sort.addEventListener('change', fetchCars);
 </script>
 </body>
 </html>

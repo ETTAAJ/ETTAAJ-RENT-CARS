@@ -146,35 +146,69 @@ $pricePerDay = (float)$car['price_day'];
 
   <div class="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
 
-    <!-- LEFT: CAR CARD -->
-    <div data-aos="fade-right" class="group">
-      <div class="bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-gold/30 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] border border-border">
-        <?php
-        $imgUrl = !empty($car['image'])
-            ? 'uploads/' . basename($car['image']) . '?v=' . (file_exists($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) ? filemtime($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) : '')
-            : 'https://via.placeholder.com/800x450/1a1a1a/ffffff?text=' . urlencode($car['name']);
-        ?>
-        <div class="relative w-full pt-[56.25%] overflow-hidden border-b border-border">
-          <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($car['name']) ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+    <!-- LEFT: CAR CARD – NOW 100% IDENTICAL TO car-detail.php -->
+    <div data-aos="fade-right" class="h-full">
+      <div class="group relative bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-gold/20 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] border border-border flex flex-col h-full">
+        
+        <!-- Car Image -->
+        <div class="relative w-full pt-[56.25%] bg-card-dark overflow-hidden border-b border-border">
+          <?php
+          $imgUrl = !empty($car['image'])
+              ? 'uploads/' . basename($car['image']) . '?v=' . (file_exists($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) ? filemtime($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . basename($car['image'])) : '')
+              : 'https://via.placeholder.com/800x450/36454F/FFFFFF?text=' . urlencode($car['name']);
+          ?>
+          <img src="<?= htmlspecialchars($imgUrl) ?>" 
+               alt="<?= htmlspecialchars($car['name']) ?>" 
+               class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         </div>
-        <div class="p-8 text-center">
-          <h3 class="text-3xl font-extrabold mb-6"><?= htmlspecialchars($car['name']) ?></h3>
-          <div class="grid grid-cols-2 gap-8 mb-8">
-            <div><svg class="w-10 h-10 mx-auto mb-2 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg><p class="font-bold"><?= $car['seats'] ?> Seats</p></div>
-            <div><svg class="w-10 h-10 mx-auto mb-2 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg><p class="font-bold"><?= $car['bags'] ?> Bags</p></div>
-          </div>
-          <div class="flex justify-center gap-6 mb-8">
-            <span class="px-6 py-2 bg-card-dark rounded-full font-bold border border-border"><?= $car['gear'] ?></span>
-            <span class="px-6 py-2 bg-card-dark rounded-full font-bold border border-border"><?= $car['fuel'] ?></span>
-          </div>
-          <div class="space-y-4">
-            <div class="flex items-center justify-center gap-4">
-              <span class="text-6xl font-black"><?= number_format($car['price_day']) ?></span>
-              <span class="px-6 py-3 bg-gradient-to-r from-gold to-yellow-500 text-black font-bold rounded-full shadow-lg">MAD/day</span>
+
+        <!-- Card Content -->
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-2xl font-extrabold text-center mb-4"><?= htmlspecialchars($car['name']) ?></h3>
+
+          <!-- Seats & Bags -->
+          <div class="flex justify-center gap-8 text-sm mb-4">
+            <div class="text-center">
+              <svg class="w-6 h-6 mx-auto mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+              </svg>
+              <span><?= $car['seats'] ?> Seats</span>
             </div>
-            <p class="text-[var(--text-muted)] pt-4 border-t border-border/50">
+            <div class="text-center">
+              <svg class="w-6 h-6 mx-auto mb-1 text-gold" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+              </svg>
+              <span><?= $car['bags'] ?> Bags</span>
+            </div>
+          </div>
+
+          <!-- Gear & Fuel -->
+          <div class="flex justify-center gap-4 mb-6">
+            <span class="px-4 py-1 bg-card-dark rounded-full text-sm border border-border"><?= htmlspecialchars($car['gear']) ?></span>
+            <span class="px-4 py-1 bg-card-dark rounded-full text-sm border border-border"><?= htmlspecialchars($car['fuel']) ?></span>
+          </div>
+
+          <!-- Price -->
+          <div class="text-center mb-6">
+            <div class="text-5xl font-black"><?= number_format($car['price_day']) ?></div>
+            <span class="inline-block px-4 py-2 bg-gradient-to-r from-gold to-yellow-500 text-black font-bold rounded-full text-sm mt-2">
+              MAD/day
+            </span>
+          </div>
+
+          <!-- Minimum Days Info -->
+          <div class="text-center mt-auto pt-4 border-t border-border/40">
+            <p class="text-[var(--text-muted)] text-sm">
               Minimum rental: <span class="text-gold font-bold"><?= $minDays ?> days</span>
             </p>
+          </div>
+
+          <!-- Optional: View Details Button (matches detail page) -->
+          <div class="mt-6">
+            <a href="car-detail.php?id=<?= $car['id'] ?>" 
+               class="block text-center bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400 text-black font-bold py-3 rounded-2xl transition transform hover:scale-105">
+              View Full Details
+            </a>
           </div>
         </div>
       </div>
