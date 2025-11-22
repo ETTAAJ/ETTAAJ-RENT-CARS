@@ -29,9 +29,9 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="About ETTAAJ Rent Cars | Best Car Rental in Marrakech Airport" />
   <meta property="og:description" content="No deposit car rental at Marrakech Airport. Free delivery, luxury & economy cars, 24/7 service. Trusted by thousands of travelers." />
-  <meta property="og:url" content="https://www.ettaajrentcars.ma/about.php" />
+  <meta property="og:url" content="https://www.ettaajrentcars.com/about.php" />
   <meta property="og:site_name" content="ETTAAJ Rent Cars" />
-  <meta property="og:image" content="https://www.ettaajrentcars.ma/pub_img/about-marrakech-og.jpg" />
+  <meta property="og:image" content="https://www.ettaajrentcars.com/pub_img/ETTAAJ-RENT-CARS.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
@@ -39,7 +39,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="About ETTAAJ Rent Cars - Top Car Rental Marrakech Airport" />
   <meta name="twitter:description" content="Free airport delivery • No deposit • Luxury & cheap cars • WhatsApp +212 772 331 080" />
-  <meta name="twitter:image" content="https://www.ettaajrentcars.ma/pub_img/about-marrakech-og.jpg" />
+  <meta name="twitter:image" content="https://www.ettaajrentcars.com/pub_img/ETTAAJ-RENT-CARS.jpg" />
 
   <!-- Updated Schema - Marrakech Airport Focused -->
   <script type="application/ld+json">
@@ -47,7 +47,7 @@
     "@context": "https://schema.org",
     "@type": "CarRentalService",
     "name": "ETTAAJ Rent Cars Marrakech",
-    "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
+    "image": "https://www.ettaajrentcars.ma/pub_img/ETTAAJ-RENT-CARS.jpg",
     "url": "https://www.ettaajrentcars.ma",
     "telephone": "+212772331080",
     "email": "contact@ettaajrentcars.ma",
@@ -116,7 +116,7 @@
       <div data-aos="fade-down" data-aos-delay="400" class="mb-8">
         <div class="flex flex-col items-center gap-4">
           <div class="flex items-center gap-3">
-            <img src="pub_img/GoldCar.png" alt="ETTAAJ Rent Cars Marrakech Logo" class="w-16 h-16 rounded-full ring-4 ring-gold/60 shadow-2xl">
+            <img src="pub_img/ETTAAJ-RENT-CARS.jpg" alt="ETTAAJ Rent Cars Marrakech Logo" class="w-16 h-16 rounded-full ring-4 ring-gold/60 shadow-2xl">
             <h1 class="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent drop-shadow-2xl">
               ETTAAJ RENT CARS
             </h1>

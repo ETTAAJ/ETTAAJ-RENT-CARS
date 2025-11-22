@@ -15,13 +15,14 @@
   <meta name="geo.placename" content="Marrakech" />
   <meta name="geo.position" content="31.6069;-8.0363" />
   <meta name="ICBM" content="31.6069, -8.0363" />
+  <link rel="icon" href="pub_img/ETTAAJ-RENT-CARS.jpg">
 
   <link rel="canonical" href="https://www.ettaajrentcars.ma/contact.php" />
 
   <meta property="og:title" content="Contact ETTAAJ Rent Cars | Car Rental Marrakech Airport 24/7" />
   <meta property="og:description" content="Free airport delivery • No deposit • Instant WhatsApp +212 772 331 080" />
-  <meta property="og:url" content="https://www.ettaajrentcars.ma/contact.php" />
-  <meta property="og:image" content="https://www.ettaajrentcars.ma/pub_img/contact-og-marrakech.jpg" />
+  <meta property="og:url" content="https://www.ettaajrentcars.com/contact.php" />
+  <meta property="og:image" content="https://www.ettaajrentcars.com/pub_img/contact-og-marrakech.jpg" />
   <meta property="og:type" content="website" />
 
   <meta name="twitter:card" content="summary_large_image" />
@@ -35,7 +36,7 @@
     "name": "ETTAAJ Rent Cars Marrakech",
     "url": "https://www.ettaajrentcars.ma",
     "telephone": "+212772331080",
-    "image": "https://www.ettaajrentcars.ma/pub_img/ettaaj-logo.png",
+    "image": "https://www.ettaajrentcars.ma/pub_img/ETTAAJ-RENT-CARS.jpg",
     "description": "Contact the best car rental in Marrakech Airport. 24/7 WhatsApp support, free delivery, no deposit rentals.",
     "address": {
       "@type": "PostalAddress",

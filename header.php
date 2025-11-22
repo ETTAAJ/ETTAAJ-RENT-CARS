@@ -7,9 +7,9 @@
   <title>ETTAAJ RENT CARS - Premium Car Rental in Morocco</title>
 
   <!-- Favicon -->
-  <link rel="icon" href="pub_img/GoldCar.png" type="image/png" sizes="512x512">
+  <link rel="icon" href="pub_img/ETTAAJ-RENT-CARS.jpg" type="image/png" sizes="512x512">
   <link rel="icon" href="pub_img/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="pub_img/GoldCar.png">
+  <link rel="apple-touch-icon" href="pub_img/ETTAAJ-RENT-CARS.jpg">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -115,7 +115,7 @@
     <div class="p-6">
       <div class="flex justify-between items-center mb-8">
         <a href="index.php" class="flex items-center space-x-2">
-          <img src="pub_img/GoldCar.png" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
+          <img src="pub_img/ETTAAJ-RENT-CARS.jpg" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
           <span class="text-xl font-bold bg-gradient-gold">ETTAAJ RENT CARS</span>
         </a>
         <button id="close-sidebar" class="text-current hover:text-[var(--gold-dark)] transition">
@@ -161,7 +161,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between lg:hidden">
         <a href="index.php" class="flex items-center space-x-2">
-          <img src="pub_img/GoldCar.png" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
+          <img src="pub_img/ETTAAJ-RENT-CARS.jpg" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
           <span class="text-xl sm:text-2xl font-bold bg-gradient-gold">ETTAAJ RENT CARS</span>
         </a>
         <button id="open-sidebar" class="text-current hover:text-[var(--gold-dark)] transition">
@@ -173,7 +173,7 @@
 
       <div class="hidden lg:flex items-center justify-between">
         <a href="index.php" class="flex items-center space-x-2">
-          <img src="pub_img/GoldCar.png" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
+          <img src="pub_img/ETTAAJ-RENT-CARS.jpg" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-[var(--gold)]/30">
           <span class="text-xl sm:text-2xl font-bold bg-gradient-gold">ETTAAJ RENT CARS</span>
         </a>
 

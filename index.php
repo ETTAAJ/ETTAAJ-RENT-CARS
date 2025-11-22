@@ -152,7 +152,7 @@
   <title>Car Rental Marrakech Airport | ETTAAJ Rent Cars – No Deposit, From 250 MAD/day</title>
   <meta name="description" content="Best car rental Marrakech Airport. No deposit, free delivery 24/7, luxury & cheap cars. WhatsApp +212 772 331 080">
   <link rel="canonical" href="https://www.ettaajrentcars.ma<?php echo $_SERVER['REQUEST_URI']; ?>">
-  <link rel="icon" href="pub_img/GoldCar.png">
+  <link rel="icon" href="pub_img/ETTAAJ-RENT-CARS.jpg">
 
   <!-- Tailwind + Fonts + AOS -->
   <script src="https://cdn.tailwindcss.com"></script>
