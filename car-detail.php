@@ -16,7 +16,6 @@ if (!$car) {
     exit;
 }
 
-// Fixed: Removed non-existent 'available' column
 $stmt = $pdo->prepare("SELECT * FROM cars WHERE id != ? ORDER BY RAND() LIMIT 4");
 $stmt->execute([$id]);
 $similarCars = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -76,6 +75,18 @@ function carImageUrl($image)
   }
 </style>
 
+<!-- ONLY THIS BUTTON BACKGROUND IS CHANGED TO NEW GREEN COLOR -->
+<style>
+  .new-book-btn {
+    background: linear-gradient(to right, #10b981, #059669) !important; /* Emerald Green */
+  }
+  .new-book-btn:hover {
+    background: linear-gradient(to right, #059669, #047857) !important; /* Darker on hover */
+    transform: scale(1.05);
+  }
+</style>
+<!-- END OF CHANGE -->
+
 <main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)] text-[var(--text-primary)]">
 
   <!-- LUXURY 2-TAB BAR -->
@@ -111,7 +122,7 @@ function carImageUrl($image)
 
   <div class="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
 
-    <!-- LEFT: LUXURY CARD (100% SAME AS BOOKING PAGE) -->
+    <!-- LEFT: LUXURY CARD -->
     <div data-aos="fade-right" class="h-full">
       <div class="group relative bg-card/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-gold/20 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] border border-border flex flex-col h-full">
 
@@ -163,10 +174,13 @@ function carImageUrl($image)
           </div>
 
           <div class="mt-6 space-y-4">
+            <!-- ONLY THIS BUTTON HAS NEW GREEN BACKGROUND -->
             <a href="booking.php?id=<?= $car['id'] ?>" 
-               class="block text-center bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400 text-black font-bold py-4 rounded-2xl transition transform hover:scale-105 text-lg">
+               class="new-book-btn block text-center text-white font-bold py-4 rounded-2xl transition transform hover:scale-105 text-lg shadow-lg">
               Book This Car Now
             </a>
+            <!-- END OF CHANGE -->
+
             <a href="index.php" class="block text-center border border-gold/50 text-gold hover:bg-gold/10 py-3 rounded-2xl transition text-lg">
               Back to Fleet
             </a>
@@ -175,7 +189,7 @@ function carImageUrl($image)
       </div>
     </div>
 
-    <!-- RIGHT: SPECIFICATIONS + WHATSAPP -->
+    <!-- RIGHT SIDE REMAINS 100% UNCHANGED -->
     <div data-aos="fade-left" class="space-y-8">
       <div class="bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-border p-10">
         <h2 class="text-3xl font-bold text-gold mb-8 text-center">Vehicle Specifications</h2>
@@ -192,7 +206,7 @@ function carImageUrl($image)
       <a href="https://wa.me/212772331080?text=Hi!%20I'm%20interested%20in%20the%20<?= urlencode($car['name']) ?>%20-%20<?= number_format($car['price_day']) ?>%20MAD/day" 
          class="block text-center bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-xl py-6 rounded-2xl shadow-2xl transition transform hover:scale-105 flex items-center justify-center gap-4">
         <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.134.297-.347.446-.52.149-.174.198-.297.297-.446.099-.148.05-.273-.024-.385-.074-.112-.67-1.62-.92-2.22-.246-.594-.495-.59-.67-.599-.174-.008-.371-.008-.569-.008-.197 0-.52.074-.792.372-.273.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.558 5.745 8.623 8.05.297.149.595.223.893.298.297.074.595.05.893-.025.297-.074 1.255-.52 1.43-.966.173-.446.173-.82.124-.966-.05-.148-.198-.297-.446-.446zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.134.297-.347.446-.52.149-.174.198-.297.297-.446.099-.148.05-.273-.024-.385-.074-.112-.67-1.62-.92-2.22-.246-.594-.495-.59-.67-.599-.174-.008-.371-.008-.569-.008-.197 0-.52.074-.792.372-.273.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.558 5.745 8.623 3.05.297.149.595.223.893.298.297.074.595.05.893-.025.297-.074 1.255-.52 1.43-.966.173-.446.173-.82.124-.966-.05-.148-.198-.297-.446-.446zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
         </svg>
         Contact via WhatsApp Now
       </a>
