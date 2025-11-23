@@ -10,7 +10,7 @@ if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true
 }
 
 /* -------------------------------------------------
-   2. REGENERATE SESSION ID every 10 min
+   2. REGENERATE SESSION ID
    ------------------------------------------------- */
 if (empty($_SESSION['last_regen']) || time() - $_SESSION['last_regen'] > 600) {
     session_regenerate_id(true);
@@ -34,9 +34,156 @@ if (isset($_GET['success'])) {
 } elseif (isset($_GET['deleted'])) {
     $alert = ['type' => 'danger', 'msg' => 'Car deleted permanently.'];
 } elseif (isset($_GET['error'])) {
-    $alert = ['type' => 'warning', 'msg' => 'An error occurred. Please try again.'];
+    $alert = ['type' => 'warning', 'msg' => 'An error occurred.'];
 }
+
+/* -------------------------------------------------
+   5. FILTER & SORT LOGIC (AJAX + Normal Load)
+   ------------------------------------------------- */
+$search = trim($_GET['search'] ?? '');
+$gear   = $_GET['gear'] ?? '';
+$fuel   = $_GET['fuel'] ?? '';
+$sort   = $_GET['sort'] ?? 'low';
+
+$where  = [];
+$params = [];
+
+if ($search !== '') {
+    $where[] = "name LIKE ?";
+    $params[] = "%$search%";
+}
+if ($gear !== '' && in_array($gear, ['Manual', 'Automatic'])) {
+    $where[] = "gear = ?";
+    $params[] = $gear;
+}
+if ($fuel !== '' && in_array($fuel, ['Diesel', 'Petrol'])) {
+    $where[] = "fuel = ?";
+    $params[] = $fuel;
+}
+
+$order = ($sort === 'high') ? 'price_day DESC' : 'price_day ASC';
+$sql = "SELECT *, COALESCE(discount, 0) AS discount FROM cars";
+if (!empty($where)) {
+    $sql .= " WHERE " . implode(' AND ', $where);
+}
+$sql .= " ORDER BY $order";
+
+/* -------------------------------------------------
+   6. RENDER CAR CARD (Same as public site)
+   ------------------------------------------------- */
+function renderAdminCarCard($car, $index = 0): string
+{
+    $img = !empty($car['image']) ? '../uploads/' . basename($car['image']) . '?v=' . @filemtime(__DIR__ . '/../uploads/' . basename($car['image'])) : '';
+    $placeholder = 'https://via.placeholder.com/600x338/36454F/FFFFFF?text=' . urlencode($car['name']);
+    $src = $img && file_exists(__DIR__ . '/../uploads/' . basename($car['image'])) ? $img : $placeholder;
+
+    $delay = 100 + ($index % 8) * 80;
+    $discount = (int)($car['discount'] ?? 0);
+    $originalPrice = (float)$car['price_day'];
+    $finalPrice = $discount > 0 ? $originalPrice * (1 - $discount / 100) : $originalPrice;
+
+    ob_start(); ?>
+    <div data-aos="fade-up" data-aos-delay="<?= $delay ?>" data-aos-duration="700"
+         class="group relative bg-[#2C3A44]/90 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl hover:shadow-yellow-500/20
+                transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]
+                border border-[#4A5A66] flex flex-col h-full">
+
+        <?php if ($discount > 0): ?>
+        <div class="absolute top-3 right-3 z-10 bg-green-600 text-white font-bold text-xs px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+            -<?= $discount ?>%
+        </div>
+        <?php endif; ?>
+
+        <div class="relative w-full pt-[56.25%] bg-[#36454F] overflow-hidden">
+            <img src="<?= htmlspecialchars($src, ENT_QUOTES) ?>"
+                 alt="<?= htmlspecialchars($car['name']) ?>"
+                 class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/600x338/36454F/FFFFFF?text=No+Image';this.classList.add('object-contain','p-8');">
+        </div>
+
+        <div class="px-5 pb-5 sm:px-6 sm:pb-6 flex-1 flex flex-col bg-[#36454F]">
+            <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2 text-center line-clamp-1">
+                <?= htmlspecialchars($car['name']) ?>
+            </h3>
+
+            <div class="flex justify-center gap-6 sm:gap-8 text-gray-400 mb-4 text-xs sm:text-sm">
+                <div class="flex flex-col items-center">
+                    <i class="bi bi-person-fill w-5 h-5 mb-1 text-yellow-500"></i>
+                    <span class="font-medium text-white"><?= (int)$car['seats'] ?> Seats</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="bi bi-briefcase-fill w-5 h-5 mb-1 text-yellow-500"></i>
+                    <span class="font-medium text-white"><?= (int)$car['bags'] ?> Bags</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4 text-xs text-gray-400 mb-5 font-medium">
+                <span class="px-3 py-1 bg-[#2C3A44] rounded-full text-white border border-[#4A5A66]"><?= htmlspecialchars($car['gear']) ?></span>
+                <span class="px-3 py-1 bg-[#2C3A44] rounded-full text-white border border-[#4A5A66]"><?= htmlspecialchars($car['fuel']) ?></span>
+            </div>
+
+            <div class="flex flex-col items-center mt-4 mb-3">
+                <div class="flex items-center gap-3">
+                    <?php if ($discount > 0): ?>
+                    <span class="text-2xl text-gray-500 line-through opacity-70">
+                        MAD <?= number_format($originalPrice) ?>
+                    </span>
+                    <?php endif; ?>
+
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-4xl sm:text-5xl font-extrabold <?= $discount > 0 ? 'text-green-400' : 'text-white' ?>">
+                            <?= number_format($finalPrice) ?>
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-black bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-full shadow-lg">
+                            MAD /day
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-auto flex gap-3">
+                <a href="edit.php?id=<?= (int)$car['id'] ?>"
+                   class="flex-1 text-center bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-orange-500 hover:to-red-500
+                          text-black font-bold py-3 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="bi bi-pencil-fill"></i> Edit
+                </a>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $car['id'] ?>"
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all duration-300">
+                    <i class="bi bi-trash-fill"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/* -------------------------------------------------
+   7. AJAX RESPONSE
+   ------------------------------------------------- */
+if (isset($_GET['ajax'])) {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $html = '';
+    foreach ($cars as $i => $c) {
+        $html .= renderAdminCarCard($c, $i);
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['html' => $html, 'count' => count($cars)]);
+    exit;
+}
+
+/* -------------------------------------------------
+   8. NORMAL LOAD
+   ------------------------------------------------- */
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,251 +192,41 @@ if (isset($_GET['success'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-        --dark-bg: #36454F;
-        --darker-bg: #2C3A44;
-        --border: #4A5A66;
-        --text: #FFFFFF;
-        --text-muted: #D1D5DB;
-        --gold: #FFD700;
-        --gold-dark: #e6c200;
-    }
-
-    * { font-family: 'Inter', sans-serif; }
-    body { background: var(--dark-bg); color: var(--text); }
-
-    .page-header {
-      background: var(--darker-bg);
-      padding: 1.5rem 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .car-card {
-      background: var(--darker-bg)/90;
-      backdrop-filter: blur(12px);
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: all 0.25s ease;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      position: relative;
-    }
-
-    .car-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 30px rgba(255,215,0,0.15);
-      border-color: var(--gold);
-    }
-
-    .discount-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #10b981;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.875rem;
-      z-index: 10;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-
-    .car-image {
-      position: relative;
-      overflow: hidden;
-      background: var(--darker-bg);
-    }
-
-    .car-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .car-card:hover .car-image img {
-      transform: scale(1.05);
-    }
-
-    .car-info {
-      padding: 1.25rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .car-name {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .meta-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.875rem;
-      color: var(--text-muted);
-    }
-
-    .tag {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      background: var(--darker-bg);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.5rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    .price-section {
-      margin-top: auto;
-      padding-top: 1rem;
-      border-top: 1px dashed var(--border);
-    }
-
-    .original-price {
-      color: #94a3b8;
-      text-decoration: line-through;
-      font-size: 0.9rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .price-main {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--gold);
-      margin-bottom: 0.25rem;
-      display: flex;
-      align-items: baseline;
-      gap: 0.4rem;
-      line-height: 1.2;
-    }
-
-    .price-main .currency {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--gold);
-    }
-
-    .price-main .amount {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .price-main .per-day {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-left: 0.25rem;
-    }
-
-    .price-sub {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--text-muted);
-    }
-
-    .empty-state i {
-      font-size: 3rem;
-      color: #6b7280;
-      margin-bottom: 1rem;
-    }
-
-    /* TOAST, BUTTONS, MODAL, DAY MODE – unchanged */
-    .toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
-    .toast { min-width: 300px; max-width: 400px; background: var(--darker-bg); border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; border-left: 5px solid; animation: slideIn 0.4s ease, fadeOut 0.5s ease 4.5s forwards; opacity: 0; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeOut { to { transform: translateX(120%); opacity: 0; } }
-    .toast.success { border-left-color: #10b981; }
-    .toast.danger { border-left-color: #ef4444; }
-    .toast.warning { border-left-color: #f59e0b; }
-    .toast-header { padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.95rem; }
-    .toast.success .toast-header { color: #10b981; }
-    .toast.danger .toast-header { color: #ef4444; }
-    .toast.warning .toast-header { color: #f59e0b; }
-    .toast-body { padding: 0 1rem 1rem 1rem; font-size: 0.875rem; color: var(--text-muted); }
-    .toast-close { margin-left: auto; background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s; }
-    .toast-close:hover { background: var(--border); color: var(--text); }
-
-    .action-area .btn { font-weight: 600; min-height: 44px; border-radius: .75rem; transition: all .2s ease; }
-    .action-area .btn-primary { background: var(--gold); border-color: var(--gold); color: #000; }
-    .action-area .btn-primary:hover, .action-area .btn-primary:focus { background: var(--gold-dark); border-color: var(--gold-dark); box-shadow: 0 0 0 3px rgba(255,215,0,.3); }
-    .action-area .btn-outline-danger { color: #ef4444; border-color: #ef4444; }
-    .action-area .btn-outline-danger:hover, .action-area .btn-outline-danger:focus { background: #ef4444; color: #fff; box-shadow: 0 0 0 3px rgba(239,68,68,.3); }
-
-    .modal-content { background: var(--darker-bg); border: 1px solid var(--border); border-radius: 1rem; }
-
-    .day-mode-toggle { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; width: 60px; height:60px; border-radius:50%; background:var(--gold); color:#000; border:none; font-size:1.5rem; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(255,215,0,.4); cursor:pointer; transition:all .3s ease; }
-    .day-mode-toggle:hover{transform:scale(1.1);box-shadow:0 12px 30px rgba(255,215,0,.5);}
-    .day-mode-toggle i{transition:transform .3s;}
-    .day-mode-toggle.active i{transform:rotate(180deg);}
-
-    body.day-mode{
-      --dark-bg:#f8fafc;--darker-bg:#ffffff;--border:#e2e8f0;--text:#1e293b;--text-muted:#64748b;
-    }
-    body.day-mode .page-header,
-    body.day-mode .car-card,
-    body.day-mode .modal-content,
-    body.day-mode .toast{ background:var(--darker-bg);border-color:var(--border); }
-    body.day-mode .car-card:hover{box-shadow:0 20px 30px rgba(0,0,0,0.08);border-color:var(--gold);}
-    body.day-mode .tag,
-    body.day-mode .car-info{background:transparent;}
-    body.day-mode .price-main{color:var(--gold);}
-    body.day-mode .btn-primary{background:var(--gold);color:#000;}
-    body.day-mode .price-main .currency,
-    body.day-mode .price-main .amount{color:var(--gold);}
-    body.day-mode .price-main .per-day{color:var(--text-muted);}
+    :root { --gold: #FFD700; }
+    body { background: #36454F; color: white; font-family: 'Inter', sans-serif; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #2C3A44; border-top: 4px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; margin: 40px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
+<!-- Toast -->
+<div class="toast-container fixed top-4 right-4 z-50" id="toastContainer"></div>
 
-<!-- DAY MODE TOGGLE -->
-<button class="day-mode-toggle" id="dayModeToggle" title="Toggle Day/Night Mode">
+<!-- Day Mode Toggle -->
+<button class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-yellow-500 text-black text-2xl shadow-2xl z-50 hover:scale-110 transition" id="dayModeToggle">
   <i class="bi bi-sun-fill"></i>
 </button>
 
 <!-- Header -->
-<div class="page-header">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-      <h2 class="h4 mb-0 fw-bold d-flex align-items-center gap-2">
-        <i class="bi bi-car-front-fill" style="color: var(--gold);"></i>
-        Car Management
+<div class="bg-[#2C3A44] border-b border-[#4A5A66] shadow-xl">
+  <div class="container mx-auto px-6 py-6">
+    <div class="flex justify-between items-center flex-wrap gap-4">
+      <h2 class="text-2xl font-bold flex items-center gap-3">
+        <i class="bi bi-car-front-fill text-yellow-500"></i> Car Management
       </h2>
-      <div class="d-flex gap-2 flex-wrap">
-        <a href="create.php" class="btn btn-success btn-sm">
+      <div class="flex gap-3">
+        <a href="create.php" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2">
           <i class="bi bi-plus-circle"></i> Add New Car
         </a>
-        <a href="change_password.php" class="btn btn-warning btn-sm text-white">
+        <a href="change_password.php" class="bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-6 rounded-xl">
           <i class="bi bi-shield-lock"></i> Password
         </a>
-        <a href="logout.php" class="btn btn-outline-danger btn-sm">
+        <a href="logout.php" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl">
           <i class="bi bi-box-arrow-right"></i> Logout
         </a>
       </div>
@@ -297,190 +234,129 @@ if (isset($_GET['success'])) {
   </div>
 </div>
 
-<div class="container pb-5">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-    <?php
-    function getCarImage($filename): string {
-        if (empty($filename)) return '';
-        $safe = basename($filename);
-        $path = '../uploads/' . $safe;
-        $full = __DIR__ . '/' . $path;
-        if (file_exists($full)) {
-            return $path . '?v=' . filemtime($full);
-        }
-        return '';
-    }
+<div class="container mx-auto px-6 py-10 max-w-7xl">
+  <!-- Filters -->
+  <div data-aos="fade-up" class="bg-[#2C3A44] p-6 rounded-2xl shadow-2xl border border-[#4A5A66] mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <input type="text" id="search" placeholder="Search car name..." value="<?= htmlspecialchars($search) ?>"
+             class="p-4 bg-[#36454F] border border-[#4A5A66] text-white rounded-xl focus:ring-2 focus:ring-yellow-500">
+      <select id="gear" class="p-4 bg-[#36454F] border border-[#4A5A66] text-white rounded-xl">
+        <option value="">All Transmission</option>
+        <option value="Manual" <?= $gear==='Manual'?'selected':'' ?>>Manual</option>
+        <option value="Automatic" <?= $gear==='Automatic'?'selected':'' ?>>Automatic</option>
+      </select>
+      <select id="fuel" class="p-4 bg-[#36454F] border border-[#4A5A66] text-white rounded-xl">
+        <option value="">All Fuel</option>
+        <option value="Diesel" <?= $fuel==='Diesel'?'selected':'' ?>>Diesel</option>
+        <option value="Petrol" <?= $fuel==='Petrol'?'selected':'' ?>>Petrol</option>
+      </select>
+      <select id="sort" class="p-4 bg-[#36454F] border border-[#4A5A66] text-white rounded-xl">
+        <option value="low" <?= $sort==='low'?'selected':'' ?>>Price: Low → High</option>
+        <option value="high" <?= $sort==='high'?'selected':'' ?>>Price: High → Low</option>
+      </select>
+      <a href="?" class="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 font-bold py-4 rounded-xl text-center">Clear All</a>
+    </div>
+  </div>
 
-    $stmt = $pdo->query("SELECT *, COALESCE(discount, 0) AS discount FROM cars ORDER BY id DESC");
-    $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  <p id="results-count" class="text-center text-gray-400 text-lg mb-8"><?= count($cars) ?> cars in total</p>
 
-    if (empty($cars)): ?>
-      <div class="col-12">
-        <div class="empty-state">
-          <i class="bi bi-inbox"></i>
-          <h5>No cars added yet</h5>
-          <p class="text-muted">Click "Add New Car" to get started.</p>
-        </div>
-      </div>
-    <?php else: ?>
-      <?php foreach ($cars as $row):
-        $img = getCarImage($row['image']);
-        $placeholder = 'https://via.placeholder.com/400x300/2C3A44/D1D5DB?text=' . urlencode($row['name']);
-        $src = $img ?: $placeholder;
-
-        $original_price = (float)$row['price_day'];
-        $discount = (int)$row['discount'];
-        $final_price = $discount > 0 ? $original_price - ($original_price * $discount / 100) : $original_price;
-      ?>
-        <div class="col">
-          <article data-aos="fade-up" class="car-card">
-            <?php if ($discount > 0): ?>
-            <div class="discount-badge"><?= $discount ?>% OFF</div>
-            <?php endif; ?>
-
-            <div class="car-image ratio ratio-4x3">
-              <img src="<?= htmlspecialchars($src, ENT_QUOTES) ?>"
-                   alt="<?= htmlspecialchars($row['name']) ?>"
-                   onerror="this.onerror=null;this.src='https://via.placeholder.com/400x300/2C3A44/D1D5DB?text=No+Image';">
+  <div id="cars-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <?php foreach ($cars as $i => $c): ?>
+      <?= renderAdminCarCard($c, $i) ?>
+      
+      <!-- Delete Modal -->
+      <div class="modal fade" id="deleteModal<?= $c['id'] ?>" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+          <div class="modal-content bg-[#2C3A44] border border-[#4A5A66] text-white">
+            <div class="modal-header border-0">
+              <h5 class="modal-title text-red-500"><i class="bi bi-exclamation-triangle-fill"></i> Confirm Delete</h5>
+              <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="car-info">
-              <h3 class="car-name"><?= htmlspecialchars($row['name']) ?></h3>
-
-              <div class="meta-tags">
-                <span class="tag"><i class="bi bi-person"></i> <?= (int)$row['seats'] ?> Seats</span>
-                <span class="tag"><i class="bi bi-briefcase"></i> <?= (int)$row['bags'] ?> Bags</span>
-              </div>
-
-              <div class="d-flex justify-content-between text-muted small mb-3">
-                <span class="tag"><i class="bi bi-gear"></i> <?= htmlspecialchars($row['gear']) ?></span>
-                <span class="tag"><i class="bi bi-fuel-pump"></i> <?= htmlspecialchars($row['fuel']) ?></span>
-              </div>
-
-              <div class="price-section">
-                <?php if ($discount > 0): ?>
-                  <div class="original-price">MAD <?= number_format($original_price) ?> /day</div>
-                <?php endif; ?>
-
-                <div class="price-main">
-                  <span class="currency">MAD</span>
-                  <span class="amount"><?= number_format($final_price) ?></span>
-                  <span class="per-day">/day</span>
-                </div>
-
-                <div class="price-sub">
-                  Week: <strong>MAD <?= number_format((float)$row['price_week']) ?></strong> |
-                  Month: <strong>MAD <?= number_format((float)$row['price_month']) ?></strong>
-                </div>
-              </div>
-
-              <div class="action-area mt-3">
-                <a href="edit.php?id=<?= (int)$row['id'] ?>"
-                   class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                  <i class="bi bi-pencil-fill"></i> Edit
-                </a>
-
-                <button type="button"
-                        class="btn btn-outline-danger w-100 mt-2 d-flex align-items-center justify-content-center gap-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteModal<?= $row['id'] ?>">
-                  <i class="bi bi-trash-fill"></i> Delete
-                </button>
-              </div>
+            <div class="modal-body">
+              <p>Permanently delete <strong><?= htmlspecialchars($c['name']) ?></strong>?</p>
             </div>
-          </article>
-        </div>
-
-        <!-- DELETE MODAL -->
-        <div class="modal fade" id="deleteModal<?= $row['id'] ?>" tabindex="-1">
-          <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Confirm Delete</h5>
-                <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body pt-2">
-                <p class="mb-0">Permanently delete <strong><?= htmlspecialchars($row['name']) ?></strong>?</p>
-              </div>
-              <div class="modal-footer border-0 pt-0">
-                <form action="delete.php" method="POST" class="d-inline w-100">
-                  <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-                  <input type="hidden" name="csrf" value="<?= $csrf ?>">
-                  <button type="submit" class="btn btn-danger w-100"
-                          onclick="this.disabled=true;this.closest('form').submit();">
-                    <i class="bi bi-trash"></i> Yes, Delete
-                  </button>
-                </form>
-                <button type="button" class="btn btn-secondary w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
-              </div>
+            <div class="modal-footer border-0">
+              <form action="delete.php" method="POST">
+                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                <input type="hidden" name="csrf" value="<?= $csrf ?>">
+                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+              </form>
+              <button type="button" class="btn btn-secondary w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
         </div>
-      <?php endforeach; ?>
-    <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
   </div>
 </div>
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  AOS.init({ once: true, duration: 600, easing: 'ease-out-quart' });
+  AOS.init({ once: true, duration: 800 });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const images = document.querySelectorAll('.car-image img');
-    images.forEach(img => {
-      img.onload = () => img.closest('.car-image').style.background = 'transparent';
-    });
-  });
+  // Live AJAX Filter
+  const els = {
+    search: document.getElementById('search'),
+    gear: document.getElementById('gear'),
+    fuel: document.getElementById('fuel'),
+    sort: document.getElementById('sort')
+  };
+  const container = document.getElementById('cars-container');
+  const countEl = document.getElementById('results-count');
+  let debounce;
 
+  const fetchCars = () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      const params = new URLSearchParams({
+        search: els.search.value.trim(),
+        gear: els.gear.value,
+        fuel: els.fuel.value,
+        sort: els.sort.value,
+        ajax: 1
+      });
+
+      container.innerHTML = '<div class="col-span-full flex justify-center"><div class="spinner"></div></div>';
+
+      fetch(`?${params}`)
+        .then(r => r.json())
+        .then(data => {
+          container.innerHTML = data.html || '<p class="col-span-full text-center text-gray-400 text-2xl">No cars found.</p>';
+          countEl.textContent = `${data.count} cars in total`;
+          AOS.refreshHard();
+        });
+    }, 400);
+  };
+
+  els.search.addEventListener('input', fetchCars);
+  els.gear.addEventListener('change', fetchCars);
+  els.fuel.addEventListener('change', fetchCars);
+  els.sort.addEventListener('change', fetchCars);
+
+  // Toast Alert
   <?php if ($alert): ?>
   (function() {
-    const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
-    toast.className = `toast <?= $alert['type'] ?>`;
+    toast.className = `toast align-items-center text-white bg-${$alert['type'] === 'success' ? 'success' : ($alert['type'] === 'danger' ? 'danger' : 'warning')} border-0`;
     toast.innerHTML = `
-      <div class="toast-header">
-        <i class="bi ${getIcon(<?= json_encode($alert['type']) ?>)}"></i>
-        <span>${getTitle(<?= json_encode($alert['type']) ?>)}</span>
-        <button type="button" class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
-      </div>
-      <div class="toast-body">
-        <?= htmlspecialchars($alert['msg']) ?>
-      </div>
-    `;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 5000);
-
-    function getIcon(type) {
-      return type === 'success' ? 'bi-check-circle-fill' :
-             type === 'danger' ? 'bi-x-circle-fill' :
-             'bi-exclamation-triangle-fill';
-    }
-    function getTitle(type) {
-      return type === 'success' ? 'Success' :
-             type === 'danger' ? 'Deleted' :
-             'Warning';
-    }
+      <div class="d-flex">
+        <div class="toast-body"><?= htmlspecialchars($alert['msg']) ?></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>`;
+    document.getElementById('toastContainer').appendChild(toast);
+    new bootstrap.Toast(toast, { delay: 5000 }).show();
   })();
   <?php endif; ?>
 
-  const toggleBtn = document.getElementById('dayModeToggle');
-  const body = document.body;
-  const icon = toggleBtn.querySelector('i');
-
-  if (localStorage.getItem('dayMode') === 'true') {
-    body.classList.add('day-mode');
-    icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
-    toggleBtn.classList.add('active');
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    body.classList.toggle('day-mode');
-    const isDay = body.classList.contains('day-mode');
-    icon.classList.toggle('bi-sun-fill', !isDay);
-    icon.classList.toggle('bi-moon-fill', isDay);
-    toggleBtn.classList.toggle('active', isDay);
-    localStorage.setItem('dayMode', isDay);
+  // Day/Night Toggle
+  const toggle = document.getElementById('dayModeToggle');
+  if (localStorage.getItem('dayMode') === 'true') document.body.classList.add('day-mode');
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('day-mode');
+    localStorage.setItem('dayMode', document.body.classList.contains('day-mode'));
+    toggle.querySelector('i').classList.toggle('bi-sun-fill');
+    toggle.querySelector('i').classList.toggle('bi-moon-fill');
   });
 </script>
 </body>
