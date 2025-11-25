@@ -1,6 +1,9 @@
-<?php include 'header.php'; ?>
+<?php 
+require_once 'init.php';
+require_once 'config.php';
+?>
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="<?= $lang ?>" class="scroll-smooth" dir="<?= getDir() ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,27 +61,43 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'media',
       theme: { extend: { colors: { gold: '#FFD700' } } }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    :root {
+      --bg: #36454F; --bg-dark: #2C3A44; --card: #36454F; --card-dark: #2C3A44;
+      --border: #4A5A66; --primary: #FFFFFF; --muted: #D1D5DB; --gold: #FFD700;
+      --card-dark-gradient: linear-gradient(135deg, #0B0B0C 0%, #121212 55%, #C6A667 120%);
+    }
+    body { background-color: var(--bg); color: var(--primary); font-family: 'Inter', sans-serif; }
+    .bg-card { background-color: var(--card); }
+    .bg-card-dark { background-color: var(--card-dark); }
+    .car-card-bg { background: var(--card-dark-gradient); }
+    .border-border { border-color: var(--border); }
+    .text-primary { color: var(--primary); }
+    .text-muted { color: var(--muted); }
+    .text-gold { color: var(--gold); }
+    /* Phone number always LTR */
+    .phone-number { direction: ltr; display: inline-block; }
   </style>
 </head>
+<body class="min-h-screen">
 
-<body class="bg-white dark:bg-gray-950 text-black dark:text-white transition-colors duration-300 min-h-screen">
+<?php include 'header.php'; ?>
 
 <main class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
 
   <div data-aos="fade-up" class="text-center mb-16">
-    <h1 class="text-5xl md:text-6xl font-bold mb-4">
-      Contact <span class="text-gold">ETTAAJ Rent Cars</span> Marrakech
+    <h1 class="text-5xl md:text-6xl font-bold mb-4 text-primary">
+      <?= $text['contact'] ?> <span class="text-gold">ETTAAJ Rent Cars</span> Marrakech
     </h1>
-    <p class="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-      Best <strong>car rental in Marrakech Airport</strong> • Available 24/7 via WhatsApp • Free delivery at Menara (RAK)
+    <p class="text-xl text-muted max-w-3xl mx-auto">
+      <?= $text['contact_subtitle'] ?>
     </p>
   </div>
 
@@ -87,7 +106,7 @@
     <!-- Left: Contact Info -->
     <div data-aos="fade-right" class="space-y-10">
 
-      <h2 class="text-3xl font-bold">We’re Here 24/7 in Marrakech</h2>
+      <h2 class="text-3xl font-bold"><?= $text['were_here_24_7'] ?></h2>
 
       <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800">
         <iframe 
@@ -104,8 +123,8 @@
             </svg>
           </div>
           <div>
-            <p class="font-bold">Office & Airport Delivery</p>
-            <p class="text-gold font-semibold">Marrakech Menara Airport (RAK) + Gueliz Office</p>
+            <p class="font-bold"><?= $text['office_airport'] ?></p>
+            <p class="text-gold font-semibold"><?= $text['marrakech_airport'] ?></p>
           </div>
         </div>
 
@@ -116,8 +135,8 @@
             </svg>
           </div>
           <div>
-            <p class="font-bold">Phone & WhatsApp (24/7)</p>
-            <a href="https://wa.me/212772331080" class="text-gold text-2xl font-bold hover:underline">+212 772 331 080</a>
+            <p class="font-bold"><?= $text['phone_whatsapp_24_7'] ?></p>
+            <a href="https://wa.me/212772331080" class="text-gold text-2xl font-bold hover:underline phone-number">+212 772 331 080</a>
           </div>
         </div>
       </div>
@@ -137,21 +156,21 @@
 
     <!-- Right: Contact Form -->
     <div data-aos="fade-left">
-      <form action="contact-process.php" method="POST" class="bg-gray-50 dark:bg-gray-900/90 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 lg:p-12 shadow-2xl">
+      <form action="contact-process.php" method="POST" class="bg-card/95 backdrop-blur-xl border border-border rounded-3xl p-8 lg:p-12 shadow-2xl">
 
         <div class="relative mb-8">
           <input type="text" name="name" id="name" required placeholder=" "
-                 class="peer w-full px-5 py-5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl text-black dark:text-white text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition placeholder-transparent">
-          <label for="name" class="absolute left-5 -top-3 bg-gray-50 dark:bg-gray-900 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-500 peer-focus:-top-3 peer-focus:text-gold peer-focus:text-sm">
-            Your Name
+                 class="peer w-full px-5 py-5 bg-white/10 border border-border rounded-2xl text-primary text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition placeholder-transparent">
+            <label for="name" class="absolute <?= $lang === 'ar' ? 'right-5' : 'left-5' ?> -top-3 bg-[var(--card)] px-3 text-sm font-medium text-gold transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-lg peer-placeholder-shown:text-muted peer-focus:-top-3 peer-focus:text-gold peer-focus:text-sm">
+            <?= $text['your_name'] ?>
           </label>
         </div>
 
         <div class="relative mb-8">
           <input type="email" name="email" id="email" required placeholder=" "
-                 class="peer w-full px-5 py-5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl text-black dark:text-white text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition placeholder-transparent">
-          <label for="email" class="absolute left-5 -top-3 bg-gray-50 dark:bg-gray-900 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-500 peer-focus:-top-3 peer-focus:text-gold peer-focus:text-sm">
-            Your Email
+                 class="peer w-full px-5 py-5 bg-white/10 border border-border rounded-2xl text-primary text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition placeholder-transparent">
+            <label for="email" class="absolute <?= $lang === 'ar' ? 'right-5' : 'left-5' ?> -top-3 bg-[var(--card)] px-3 text-sm font-medium text-gold transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-lg peer-placeholder-shown:text-muted peer-focus:-top-3 peer-focus:text-gold peer-focus:text-sm">
+            <?= $text['your_email'] ?>
           </label>
         </div>
 
@@ -163,43 +182,37 @@
             rows="6" 
             required 
             placeholder=" "
-            class="peer w-full px-5 pt-8 pb-5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-2xl text-black dark:text-white text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition resize-none placeholder-transparent">
+            class="peer w-full px-5 pt-8 pb-5 bg-white/10 border border-border rounded-2xl text-white text-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition resize-none placeholder-transparent">
           </textarea>
           <label 
             for="message" 
-            class="absolute left-5 top-4 origin-left transform -translate-y-2 scale-75 
-                    dark:bg-gray-900 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 
+            class="absolute <?= $lang === 'ar' ? 'right-5' : 'left-5' ?> top-4 origin-<?= $lang === 'ar' ? 'right' : 'left' ?> transform -translate-y-2 scale-75 
+                    bg-[var(--card)] px-3 text-sm font-medium text-gold 
                    transition-all duration-200 
                    peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
-                   peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-500 
+                   peer-placeholder-shown:scale-100 peer-placeholder-shown:text-gray-400 
                    peer-focus:-translate-y-2 peer-focus:scale-75 peer-focus:text-gold">
-            Your Message (e.g. pickup date, car type...)
+            <?= $text['your_message'] ?>
           </label>
         </div>
 
         <button type="submit" class="w-full bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-500 text-black font-bold text-lg py-5 rounded-2xl shadow-xl transition-all transform hover:scale-[1.02] active:scale-98">
-          Send Message – We Reply in Minutes
+          <?= $text['send_message'] ?>
         </button>
       </form>
 
       <div class="text-center mt-10">
-        <p class="text-gray-700 dark:text-gray-300 mb-5 text-lg">Fastest way → Chat now</p>
+        <p class="text-gray-200 mb-5 text-lg"><?= $text['fastest_way'] ?></p>
         <a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%20RENT%20CARS!%0AI%20just%20landed%20at%20Marrakech%20Airport%20and%20need%20a%20car!" 
            target="_blank"
            class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-bold py-5 px-10 rounded-2xl shadow-xl transition transform hover:scale-105">
           <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.297-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.844m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.884 3.488"/></svg>
-          Chat on WhatsApp Now
+          <?= $text['chat_whatsapp'] ?>
         </a>
       </div>
     </div>
   </div>
 </main>
-
-<!-- Floating WhatsApp Button -->
-<a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%20RENT%20CARS!%0AI%20just%20landed%20at%20Marrakech%20Airport!" target="_blank"
-   class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all hover:scale-110">
-  <svg class="w-9 h-9" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.297-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.844m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.884 3.488"/></svg>
-</a>
 
 <?php include 'footer.php'; ?>
 

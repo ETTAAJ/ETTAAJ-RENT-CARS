@@ -1,6 +1,9 @@
-<?php include 'header.php'; ?>
+<?php 
+require_once 'init.php';
+require_once 'config.php';
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $lang ?>" dir="<?= getDir() ?>">
 <head>
   <!-- Primary Meta Tags - FULLY OPTIMIZED FOR MARRAKECH -->
   <meta charset="UTF-8" />
@@ -79,24 +82,45 @@
   }
   </script>
 
-  <!-- CSS & Fonts (unchanged) -->
+  <!-- Tailwind + Fonts + AOS + Bootstrap Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          colors: { gold: '#FFD700', 'gold-dark': '#E6C200' }
-        }
-      }
+      theme: { extend: { colors: { gold: '#FFD700' } } }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="format-detection" content="telephone=yes" />
   <meta name="theme-color" content="#36454F" />
+
+  <style>
+    :root {
+      --bg: #36454F; --bg-dark: #2C3A44; --card: #36454F; --card-dark: #2C3A44;
+      --border: #4A5A66; --primary: #FFFFFF; --muted: #D1D5DB; --gold: #FFD700;
+      --text-primary: var(--primary); --text-muted: var(--muted);
+      --card-dark-gradient: linear-gradient(135deg, #0B0B0C 0%, #121212 55%, #C6A667 120%);
+    }
+    .light {
+      --bg: #f8fafc; --bg-dark: #e2e8f0; --card: #ffffff; --card-dark: #f1f5f9;
+      --border: #cbd5e1; --primary: #1e293b; --muted: #64748b; --gold: #d97706;
+      --text-primary: var(--primary); --text-muted: var(--muted);
+    }
+    body { background-color: var(--bg); color: var(--primary); font-family: 'Inter', sans-serif; }
+    .bg-card { background-color: var(--card); }
+    .bg-card-dark { background-color: var(--card-dark); }
+    .car-card-bg { background: var(--card-dark-gradient); }
+    .border-border { border-color: var(--border); }
+    .text-primary { color: var(--primary); }
+    .text-muted { color: var(--muted); }
+    .text-gold { color: var(--gold); }
+  </style>
 </head>
-<body class="bg-[var(--bg)] text-[var(--primary)]">
+<body class="min-h-screen">
+
+<?php include 'header.php'; ?>
 
 <main class="max-w-7xl mx-auto px-4 py-16 text-center">
   <!-- Hero Section - Now Marrakech Optimized -->
@@ -110,7 +134,7 @@
       <div class="particle delay-2"></div>
       <div class="particle delay-3"></div>
       <div class="particle delay-4"></div>
-    </ Casdiv>
+    </div>
 
     <div class="relative z-10 max-w-5xl mx-auto px-4">
       <div data-aos="fade-down" data-aos-delay="400" class="mb-8">
@@ -124,24 +148,25 @@
           <a href="https://wa.me/212772331080?text=Hi%20ETTAAJ%2C%20I%20arrived%20at%20Marrakech%20Airport!" 
              class="flex items-center gap-2 text-gold font-semibold text-lg hover:text-yellow-400 transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
-            +212 772 331 080 (WhatsApp 24/7)
+            <span class="phone-number" dir="ltr">+212 772 331 080</span> (<?= $text['support_24_7'] ?>)
           </a>
         </div>
       </div>
 
-      <h2 data-aos="zoom-in" data-aos-delay="700" class="text-4xl md:text-6xl lg:text-7xl font-bold text-primary mb-6 leading-tight">
-        Your Trusted <span class="text-gold animate-pulse">Car Rental in Marrakech Airport</span>
+      <h2 data-aos="zoom-in" data-aos-delay="700" class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+        <?= $text['about_title'] ?>
       </h2>
 
-      <p data-aos="fade-up" data-aos-delay="1000" class="text-lg md:text-xl text-muted mb-10 max-w-3xl mx-auto leading-relaxed">
-        Since 2019, ETTAAJ Rent Cars has been the <strong>best car rental in Marrakech Airport</strong> for thousands of travelers. 
-        We specialize in <strong>car rental Marrakech no deposit</strong>, free Menara Airport delivery, and unbeatable 24/7 support.
+      <p data-aos="fade-up" data-aos-delay="1000" class="text-lg md:text-xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
+        <?= $text['about_subtitle'] ?>
       </p>
 
       <div data-aos="fade-up" data-aos-delay="1300">
         <a href="https://wa.me/212772331080?text=Hello%20ETTAAJ%2C%20I%20need%20a%20car%20at%20Marrakech%20Airport!" 
-           class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg py-4 px-10 rounded-full shadow-2xl transform transition-all duration-300 hover:scale-110">
-          Book Now via WhatsApp
+           target="_blank"
+           class="group inline-flex items-center gap-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg px-10 py-5 rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-1.174-2.294-.174-.338-.434-.327-.672-.327-.227 0-.482.074-.735.174-.67.267-1.25.85-1.25 2.076 0 1.226.89 2.407 1.013 2.567.124.16 1.772 2.708 4.293 3.796 1.52.654 2.158.75 2.92.625.76-.124 2.03-.83 2.317-1.632.287-.802.287-1.49.2-1.632-.087-.15-.346-.25-.644-.3z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.132.547 4.135 1.507 5.987L0 24l6.2-1.625C8.002 23.227 9.973 23.773 12 23.773c6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+          <?= $text['book_on_whatsapp'] ?>
         </a>
       </div>
     </div>
@@ -157,9 +182,9 @@
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
         </svg>
       </div>
-      <h3 class="font-bold text-2xl mb-4 text-primary">Our Mission</h3>
+      <h3 class="font-bold text-2xl mb-4 text-primary"><?= $text['our_mission'] ?></h3>
       <p class="text-muted leading-relaxed">
-        To deliver the fastest, most reliable <strong>car rental in Marrakech Airport</strong> with zero deposit, free delivery, and genuine Moroccan hospitality — every time.
+        <?= $text['mission_desc'] ?>
       </p>
     </div>
 
@@ -167,9 +192,9 @@
       <div class="w-16 h-16 bg-gradient-to-br from-gold to-yellow-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg animate-pulse">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
       </div>
-      <h3 class="font-bold text-2xl mb-4 text-primary">Our Vision</h3>
+      <h3 class="font-bold text-2xl mb-4 text-primary"><?= $text['our_vision'] ?></h3>
       <p class="text-muted leading-relaxed">
-        To become the #1 <strong>car rental agency in Marrakech</strong> known worldwide for no-deposit rentals, luxury fleet, and golden service.
+        <?= $text['vision_desc'] ?>
       </p>
     </div>
   </section>
@@ -180,31 +205,31 @@
       <div class="w-16 h-16 bg-gradient-to-br from-gold to-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg animate-pulse">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
       </div>
-      <h3 class="font-bold text-xl mb-2 text-primary">No Hidden Fees</h3>
-      <p class="text-muted">True <strong>car rental Marrakech without deposit</strong> — what you see is what you pay.</p>
+      <h3 class="font-bold text-xl mb-2 text-primary"><?= $text['no_hidden_fees'] ?></h3>
+      <p class="text-muted"><?= $text['no_hidden_fees_desc'] ?></p>
     </div>
 
     <div data-aos="zoom-in" data-aos-delay="200" class="bg-card/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-border hover:shadow-gold/20 transition transform hover:-translate-y-2">
       <div class="w-16 h-16 bg-gradient-to-br from-gold to-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg animate-pulse">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
-      <h3 class="font-bold text-xl mb-2 text-primary">24/7 Golden Support</h3>
-      <p class="text-muted">Instant replies on WhatsApp, even at 3 AM.</p>
+      <h3 class="font-bold text-xl mb-2 text-primary"><?= $text['support_24_7'] ?></h3>
+      <p class="text-muted"><?= $text['support_24_7_desc'] ?></p>
     </div>
 
     <div data-aos="zoom-in" data-aos-delay="400" class="bg-card/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-border hover:shadow-gold/20 transition transform hover:-translate-y-2">
       <div class="w-16 h-16 bg-gradient-to-br from-gold to-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg animate-pulse">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       </div>
-      <h3 class="font-bold text-xl mb-2 text-primary">Fastest Airport Delivery</h3>
-      <p class="text-muted">Meet & greet in 10–15 minutes at <strong>Marrakech Menara Airport</strong>.</p>
+      <h3 class="font-bold text-xl mb-2 text-primary"><?= $text['fastest_delivery'] ?></h3>
+      <p class="text-muted"><?= $text['fastest_delivery_desc'] ?></p>
     </div>
   </section>
 
   <!-- Final CTA -->
   <div data-aos="fade-up" class="mt-16">
-    <a href="index.php" class="inline-flex items-center gap-3 bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400 text-primary font-bold text-lg py-5 px-12 rounded-full shadow-2xl transform transition-all duration-300 hover:scale-110">
-      View Cars at Marrakech Airport
+    <a href="<?= langUrl('index.php') ?>" class="inline-flex items-center gap-3 bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-orange-400 text-black font-bold text-lg py-5 px-12 rounded-full shadow-2xl transform transition-all duration-300 hover:scale-110">
+      <?= $text['view_cars_airport'] ?>
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
     </a>
   </div>

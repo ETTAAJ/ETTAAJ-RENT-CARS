@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require_once 'config.php';
 
 $id = intval($_GET['id'] ?? 0);
 $stmt = $pdo->prepare("SELECT * FROM cars WHERE id = ?");
@@ -37,6 +37,26 @@ function carImageUrl($image)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
+  :root {
+    --bg: #36454F; --bg-dark: #2C3A44; --card: #36454F; --card-dark: #2C3A44;
+    --border: #4A5A66; --primary: #FFFFFF; --muted: #D1D5DB; --gold: #FFD700;
+    --text-primary: var(--primary); --text-muted: var(--muted);
+    --card-dark-gradient: linear-gradient(135deg, #0B0B0C 0%, #121212 55%, #C6A667 120%);
+  }
+  .light {
+    --bg: #f8fafc; --bg-dark: #e2e8f0; --card: #ffffff; --card-dark: #f1f5f9;
+    --border: #cbd5e1; --primary: #1e293b; --muted: #64748b; --gold: #d97706;
+    --text-primary: var(--primary); --text-muted: var(--muted);
+  }
+  body { background-color: var(--bg); color: var(--primary); }
+  .bg-card { background-color: var(--card); }
+  .bg-card-dark { background-color: var(--card-dark); }
+  .car-card-bg { background: var(--card-dark-gradient); }
+  .border-border { border-color: var(--border); }
+  .text-primary { color: var(--primary); }
+  .text-muted { color: var(--muted); }
+  .text-gold { color: var(--gold); }
+
   .tab-bar {
     position: relative;
     background: rgba(30, 30, 30, 0.4);
@@ -47,6 +67,11 @@ function carImageUrl($image)
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     transition: box-shadow 0.5s ease;
+  }
+  .light .tab-bar {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(217, 119, 6, 0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   }
   .tab-bar::before {
     content: '';
@@ -68,9 +93,12 @@ function carImageUrl($image)
     border-radius: 12px; transition: all 0.4s ease; position: relative; z-index: 10;
   }
   .tab-item svg { width: 26px; height: 26px; margin-right: 10px; }
+  html[dir="rtl"] .tab-item svg { margin-right: 0; margin-left: 10px; }
   .tab-item.active { color: #000; }
   .tab-item:not(.active) { color: rgba(255,255,255,0.75); }
+  .light .tab-item:not(.active) { color: rgba(30, 41, 59, 0.75); }
   .tab-item:hover:not(.active) { color: #FFD700; }
+  .light .tab-item:hover:not(.active) { color: #d97706; }
 
   @media (max-width: 640px) {
     .tab-item { padding: 14px 8px; font-size: 1rem; }
@@ -99,10 +127,8 @@ function carImageUrl($image)
   }
 
   /* Input Styling */
-  :root { --input-color: #000000; }
-  .dark, [data-theme="dark"] { --input-color: #FFFFFF; }
-  input { color: var(--input-color) !important; -webkit-text-fill-color: var(--input-color) !important; }
-  input::placeholder { color: #666 !important; opacity: 0.7; }
+  input { color: var(--primary) !important; -webkit-text-fill-color: var(--primary) !important; }
+  input::placeholder { color: var(--muted) !important; opacity: 0.7; }
 
   /* Insurance Cards */
   .insurance-option {
@@ -112,7 +138,7 @@ function carImageUrl($image)
   .insurance-option:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 30px rgba(255, 215, 0, 0.15) !important;
-  }
+    }
   .insurance-option input[type="radio"] {
     position: absolute;
     opacity: 0;
@@ -141,9 +167,17 @@ function carImageUrl($image)
     flex-wrap: wrap;
     gap: 1rem;
   }
+  .light .extra-item {
+    background: rgba(30, 41, 59, 0.03);
+    border-color: rgba(217, 119, 6, 0.15);
+  }
   .extra-item:hover {
     background: rgba(255,215,0,0.06);
     border-color: rgba(255,215,0,0.3);
+  }
+  .light .extra-item:hover {
+    background: rgba(217, 119, 6, 0.06);
+    border-color: rgba(217, 119, 6, 0.3);
   }
   .extra-item label { flex: 1; min-width: 200px; cursor: pointer; }
   .extra-item svg {
@@ -178,6 +212,9 @@ function carImageUrl($image)
     transition: all 0.4s ease;
     border-radius: 34px;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .light .slider {
+    background-color: #cbd5e1;
   }
   .slider:before {
     position: absolute;
@@ -222,23 +259,23 @@ function carImageUrl($image)
   }
 </style>
 
-<main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)] text-[var(--text-primary)]">
+<main class="max-w-7xl mx-auto px-4 py-12 bg-[var(--bg)] text-primary">
 
   <!-- LUXURY 2-TAB BAR -->
   <div class="max-w-3xl mx-auto mb-16">
-    <div class="tab-bar active-booking" id="tab-bar">
-      <div class="flex">
-        <a href="car-detail.php?id=<?= $car['id'] ?>" id="details-tab-link" class="tab-item flex items-center justify-center">
+    <div class="tab-bar active-booking" id="tab-bar" style="direction: ltr;">
+      <div class="flex" style="direction: ltr;">
+        <a href="<?= langUrl('car-detail.php', ['id' => $car['id']]) ?>" id="details-tab-link" class="tab-item flex items-center justify-center">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h-4m-6 0H5"/>
           </svg>
-          <span>Car Details</span>
+          <span><?= t('car_details') ?></span>
         </a>
-        <a href="booking.php?id=<?= $car['id'] ?>" class="tab-item flex items-center justify-center active">
+        <a href="<?= langUrl('booking.php', ['id' => $car['id']]) ?>" class="tab-item flex items-center justify-center active">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
-          <span>Booking Details</span>
+          <span><?= t('booking_details') ?></span>
         </a>
       </div>
     </div>
@@ -248,10 +285,10 @@ function carImageUrl($image)
   <div class="text-center mb-16" data-aos="fade-up">
     <h1 class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text 
                bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 drop-shadow-2xl leading-tight">
-      Complete Your Booking
+      <?= t('complete_booking') ?>
     </h1>
     <p class="mt-6 text-xl sm:text-2xl font-medium text-amber-400 drop-shadow-lg tracking-wider">
-      Premium Service • Instant Confirmation • 24/7 Support
+      <?= $text['premium_service'] ?>
     </p>
   </div>
 
@@ -260,55 +297,55 @@ function carImageUrl($image)
     <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gold mb-2">
       <?= htmlspecialchars($car['name']) ?>
     </h2>
-    <div class="flex items-center justify-center gap-4 text-sm text-[var(--text-muted)]">
+    <div class="flex items-center justify-center gap-4 text-sm text-muted">
       <span class="flex items-center gap-2">
         <i class="bi bi-person-fill text-gold"></i>
-        <?= $car['seats'] ?> Seats
+        <span class="text-white" dir="ltr"><?= formatNumber($car['seats']) ?></span> <span class="text-white"><?= $text['seats'] ?></span>
       </span>
       <span class="flex items-center gap-2">
         <i class="bi bi-briefcase-fill text-gold"></i>
-        <?= $car['bags'] ?> Bags
+        <span class="text-white" dir="ltr"><?= formatNumber($car['bags']) ?></span> <span class="text-white"><?= $text['bags'] ?></span>
       </span>
-      <span class="px-3 py-1 bg-card-dark rounded-full border border-border"><?= htmlspecialchars($car['gear']) ?></span>
-      <span class="px-3 py-1 bg-card-dark rounded-full border border-border"><?= htmlspecialchars($car['fuel']) ?></span>
+      <span class="px-3 py-1 bg-card-dark rounded-full border border-border"><?= $car['gear'] === 'Manual' ? $text['manual'] : ($car['gear'] === 'Automatic' ? $text['automatic'] : htmlspecialchars($car['gear'])) ?></span>
+      <span class="px-3 py-1 bg-card-dark rounded-full border border-border"><?= $car['fuel'] === 'Diesel' ? $text['diesel'] : ($car['fuel'] === 'Petrol' ? $text['petrol'] : htmlspecialchars($car['fuel'])) ?></span>
     </div>
     <div class="mt-4">
-      <span class="text-2xl font-black text-gold">
-        MAD <?= number_format($discountedPricePerDay) ?>
+      <span class="text-2xl font-black text-gold" dir="ltr">
+        MAD <?= formatNumber($discountedPricePerDay) ?>
       </span>
-      <span class="text-lg text-[var(--text-muted)]">/day</span>
+      <span class="text-lg text-muted">/<?= $text['day'] ?></span>
       <?php if ($hasDiscount): ?>
-        <span class="ml-2 text-lg text-green-400 line-through opacity-70">
-          MAD <?= number_format($originalPricePerDay) ?>
+        <span class="ml-2 text-lg text-green-400 line-through opacity-70" dir="ltr">
+          MAD <?= formatNumber($originalPricePerDay) ?>
         </span>
-        <span class="ml-2 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-bold">
-          -<?= $discountPercent ?>% OFF
+        <span class="ml-2 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-bold" dir="ltr">
+          -<?= formatNumber($discountPercent) ?>% OFF
         </span>
       <?php endif; ?>
     </div>
   </div>
-
+        
   <!-- CAR IMAGE -->
   <div class="max-w-4xl mx-auto mb-8" data-aos="fade-up">
     <div class="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-border group">
-      <div class="relative w-full pt-[56.25%] bg-card-dark overflow-hidden">
-        <?php
-        $imgUrl = !empty($car['image'])
+      <div class="relative w-full pt-[56.25%] car-card-bg overflow-hidden">
+          <?php
+          $imgUrl = !empty($car['image'])
             ? carImageUrl($car['image'])
-            : 'https://via.placeholder.com/800x450/36454F/FFFFFF?text=' . urlencode($car['name']);
-        ?>
-        <img src="<?= htmlspecialchars($imgUrl) ?>" 
-             alt="<?= htmlspecialchars($car['name']) ?>" 
-             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-        
-        <?php if ($hasDiscount): ?>
+              : 'https://via.placeholder.com/800x450/36454F/FFFFFF?text=' . urlencode($car['name']);
+          ?>
+          <img src="<?= htmlspecialchars($imgUrl) ?>" 
+               alt="<?= htmlspecialchars($car['name']) ?>"
+               class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+          <?php if ($hasDiscount): ?>
           <div class="discount-badge">
             -<?= $discountPercent ?>%
           </div>
-        <?php endif; ?>
-      </div>
-    </div>
-  </div>
+          <?php endif; ?>
+        </div>
+            </div>
+          </div>
 
   <div class="max-w-4xl mx-auto">
     <!-- BOOKING FORM -->
@@ -318,109 +355,109 @@ function carImageUrl($image)
 
         <!-- DATES -->
         <div>
-          <h2 class="text-2xl font-bold text-gold mb-4">Trip Dates</h2>
+          <h2 class="text-2xl font-bold text-gold mb-4"><?= $text['trip_dates'] ?></h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="relative">
+        <div class="relative">
               <input type="date" name="pickup" id="pickup" required 
                      class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition">
-              <label class="absolute left-4 -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold">Pickup Date</label>
-            </div>
-            <div class="relative">
+              <label class="absolute <?= $lang === 'ar' ? 'right-4' : 'left-4' ?> -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold"><?= $text['pickup_date'] ?></label>
+        </div>
+        <div class="relative">
               <input type="date" name="return" id="return" required 
                      class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold focus:border-gold transition">
-              <label class="absolute left-4 -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold">Return Date</label>
+              <label class="absolute <?= $lang === 'ar' ? 'right-4' : 'left-4' ?> -top-2.5 bg-[var(--card)] px-3 text-xs font-bold text-gold"><?= $text['return_date'] ?></label>
             </div>
           </div>
-          <p id="date-error" class="text-red-400 text-sm mt-2 hidden">Return date must be at least <?= $minDays ?> days after pickup.</p>
+          <p id="date-error" class="text-red-400 text-sm mt-2 hidden"><?= $text['return_date_error'] ?> <span dir="ltr"><?= formatNumber($minDays) ?></span> <?= $text['after_pickup'] ?></p>
         </div>
 
         <!-- PROTECTION PLAN -->
         <div>
-          <h2 class="text-2xl font-bold text-gold mb-4">Protection Plan</h2>
-          <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-gold mb-4"><?= $text['protection_plan'] ?></h2>
+        <div class="space-y-4">
 
             <div class="insurance-option">
-              <input type="radio" name="insurance" id="basic" value="Basic Insurance - Included" checked>
+              <input type="radio" name="insurance" id="basic" value="<?= $text['basic_insurance'] ?> - <?= $text['free'] ?>" checked>
               <label for="basic" class="block p-6 bg-card-dark/80 rounded-2xl border border-border hover:border-gold/50 transition-all">
                 <div class="flex justify-between items-start mb-3">
                   <div>
-                    <h4 class="text-xl font-bold">Basic Insurance</h4>
-                    <p class="text-sm text-green-400">Standard coverage included</p>
+                    <h4 class="text-xl font-bold"><?= $text['basic_insurance'] ?></h4>
+                    <p class="text-sm text-green-400"><?= $text['standard_coverage'] ?></p>
                   </div>
-                  <span class="text-2xl font-black text-gold">FREE</span>
+                  <span class="text-2xl font-black text-gold"><?= $text['free'] ?></span>
                 </div>
-                <p class="text-sm text-[var(--text-muted)] mb-3">Deposit: <strong>$588.00</strong></p>
-                <ul class="text-sm space-y-1 text-[var(--text-muted)]">
-                  <li>• Third-party liability</li>
-                  <li>• Basic collision damage waiver</li>
-                  <li>• Standard theft protection</li>
+                <p class="text-sm text-muted mb-3"><?= $text['deposit'] ?>: <strong dir="ltr">$588.00</strong></p>
+                <ul class="text-sm space-y-1 text-muted">
+                  <li>• <?= $text['third_party_liability'] ?></li>
+                  <li>• <?= $text['basic_collision'] ?></li>
+                  <li>• <?= $text['standard_theft'] ?></li>
                 </ul>
               </label>
             </div>
 
             <div class="insurance-option">
-              <input type="radio" name="insurance" id="smart" value="Smart Insurance - +$8.90/day">
+              <input type="radio" name="insurance" id="smart" value="<?= $text['smart_insurance'] ?> - +$8.90/<?= $text['day'] ?>">
               <label for="smart" class="block p-6 bg-card-dark/80 rounded-2xl border border-border hover:border-gold/50 transition-all">
                 <div class="flex justify-between items-start mb-3">
                   <div>
-                    <h4 class="text-xl font-bold">Smart Insurance</h4>
-                    <p class="text-sm text-amber-400">CITADINE Rate</p>
+                    <h4 class="text-xl font-bold"><?= $text['smart_insurance'] ?></h4>
+                    <p class="text-sm text-amber-400"><?= $text['citadine_rate'] ?></p>
                   </div>
-                  <span class="text-2xl font-black text-gold">+$8.90/day</span>
+                  <span class="text-2xl font-black text-gold" dir="ltr">+$8.90/<?= $text['day'] ?></span>
                 </div>
-                <p class="text-sm text-[var(--text-muted)] mb-3">Deposit: <strong>$294.00</strong></p>
+                <p class="text-sm text-[var(--text-muted)] mb-3"><?= $text['deposit'] ?>: <strong dir="ltr">$294.00</strong></p>
                 <ul class="text-sm space-y-1 text-[var(--text-muted)]">
-                  <li>• All Basic coverage</li>
-                  <li>• Reduced excess by 50%</li>
-                  <li>• Window and tire coverage</li>
-                  <li>• Personal accident insurance</li>
+                  <li>• <?= $text['all_basic_coverage'] ?></li>
+                  <li>• <?= $text['reduced_excess'] ?></li>
+                  <li>• <?= $text['window_tire'] ?></li>
+                  <li>• <?= $text['personal_accident'] ?></li>
                 </ul>
               </label>
             </div>
 
             <div class="insurance-option">
-              <input type="radio" name="insurance" id="premium" value="Premium Insurance - +$14.40/day">
+              <input type="radio" name="insurance" id="premium" value="<?= $text['premium_insurance'] ?> - +$14.40/<?= $text['day'] ?>">
               <label for="premium" class="block p-6 bg-card-dark/80 rounded-2xl border border-border hover:border-gold/50 transition-all">
                 <div class="flex justify-between items-start mb-3">
                   <div>
-                    <h4 class="text-xl font-bold">Premium Insurance</h4>
-                    <p class="text-sm text-amber-400">CITADINE Rate</p>
+                    <h4 class="text-xl font-bold"><?= $text['premium_insurance'] ?></h4>
+                    <p class="text-sm text-amber-400"><?= $text['citadine_rate'] ?></p>
                   </div>
-                  <span class="text-2xl font-black text-gold">+$14.40/day</span>
+                  <span class="text-2xl font-black text-gold" dir="ltr">+$14.40/<?= $text['day'] ?></span>
                 </div>
-                <p class="text-sm text-[var(--text-muted)] mb-3">Deposit: <strong>$98.00</strong></p>
+                <p class="text-sm text-[var(--text-muted)] mb-3"><?= $text['deposit'] ?>: <strong dir="ltr">$98.00</strong></p>
                 <ul class="text-sm space-y-1 text-[var(--text-muted)]">
-                  <li>• All Smart coverage</li>
-                  <li>• Zero excess</li>
-                  <li>• 24/7 premium roadside assistance</li>
-                  <li>• Personal effects coverage</li>
-                  <li>• Extended liability protection</li>
+                  <li>• <?= $text['all_basic_coverage'] ?></li>
+                  <li>• <?= $text['zero_excess'] ?></li>
+                  <li>• <?= $text['premium_roadside'] ?></li>
+                  <li>• <?= $text['personal_effects'] ?></li>
+                  <li>• <?= $text['extended_liability'] ?></li>
                 </ul>
               </label>
             </div>
           </div>
-          <p class="text-xs text-center text-[var(--text-muted)] mt-4">
-            All plans include mandatory third-party liability. Premium protections can be modified until pickup time.
+          <p class="text-xs text-center text-muted mt-4">
+            <?= $text['insurance_note'] ?>
           </p>
         </div>
 
         <!-- TRAVEL ESSENTIALS -->
         <div>
-          <h2 class="text-2xl font-bold text-gold mb-4">Travel Essentials</h2>
+          <h2 class="text-2xl font-bold text-gold mb-4"><?= $text['travel_essentials'] ?></h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             <div class="extra-item">
               <label for="fuel" class="flex-1 flex items-center gap-3">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h1m4-4v12m4-8h6m-3-3v6"/></svg>
                 <div>
-                  <div class="font-semibold">Premium Fuel Service</div>
-                  <div class="text-xs text-[var(--text-muted)]">Prepaid full tank</div>
+                  <div class="font-semibold"><?= $text['premium_fuel_service'] ?></div>
+                  <div class="text-xs text-muted"><?= $text['prepaid_full_tank'] ?></div>
                 </div>
               </label>
               <div class="flex items-center gap-3">
-                <span class="extra-price">$110.00/rental</span>
+                <span class="extra-price" dir="ltr">$110.00/rental</span>
                 <div class="toggle-switch">
-                  <input type="checkbox" id="fuel" name="extras[]" value="Premium Fuel Service - $110.00/rental">
+                  <input type="checkbox" id="fuel" name="extras[]" value="<?= $text['premium_fuel_service'] ?> - $110.00/rental">
                   <span class="slider"></span>
                 </div>
               </div>
@@ -430,14 +467,14 @@ function carImageUrl($image)
               <label for="unlimitedkm" class="flex-1 flex items-center gap-3">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 <div>
-                  <div class="font-semibold">Unlimited Kilometers</div>
-                  <div class="text-xs text-[var(--text-muted)]">Drive without mileage restrictions</div>
+                  <div class="font-semibold"><?= $text['unlimited_kilometers'] ?></div>
+                  <div class="text-xs text-[var(--text-muted)]"><?= $text['drive_without_restrictions'] ?></div>
                 </div>
               </label>
               <div class="flex items-center gap-3">
-                <span class="extra-price">$10.50/day</span>
+                <span class="extra-price" dir="ltr">$10.50/<?= $text['day'] ?></span>
                 <div class="toggle-switch">
-                  <input type="checkbox" id="unlimitedkm" name="extras[]" value="Unlimited Kilometers - $10.50/day">
+                  <input type="checkbox" id="unlimitedkm" name="extras[]" value="<?= $text['unlimited_kilometers'] ?> - $10.50/<?= $text['day'] ?>">
                   <span class="slider"></span>
                 </div>
               </div>
@@ -447,14 +484,14 @@ function carImageUrl($image)
               <label for="flexcancel" class="flex-1 flex items-center gap-3">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <div>
-                  <div class="font-semibold">Flexible Cancellation</div>
-                  <div class="text-xs text-[var(--text-muted)]">Free cancellation until scheduled departure</div>
+                  <div class="font-semibold"><?= $text['flexible_cancellation'] ?></div>
+                  <div class="text-xs text-[var(--text-muted)]"><?= $text['free_cancellation_until'] ?></div>
                 </div>
               </label>
               <div class="flex items-center gap-3">
-                <span class="extra-price">$9.50/rental</span>
+                <span class="extra-price" dir="ltr">$9.50/rental</span>
                 <div class="toggle-switch">
-                  <input type="checkbox" id="flexcancel" name="extras[]" value="Flexible Cancellation - $9.50/rental">
+                  <input type="checkbox" id="flexcancel" name="extras[]" value="<?= $text['flexible_cancellation'] ?> - $9.50/rental">
                   <span class="slider"></span>
                 </div>
               </div>
@@ -464,14 +501,14 @@ function carImageUrl($image)
               <label for="extradriver" class="flex-1 flex items-center gap-3">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H9v-1c-4 0-6-4-6-4v-3h12v3c0 0-2 4-6 4z"/></svg>
                 <div>
-                  <div class="font-semibold">Additional Drivers</div>
-                  <div class="text-xs text-[var(--text-muted)]">Add up to 2 additional drivers</div>
+                  <div class="font-semibold"><?= $text['additional_drivers'] ?></div>
+                  <div class="text-xs text-[var(--text-muted)]"><?= $text['add_up_to_2'] ?></div>
                 </div>
               </label>
               <div class="flex items-center gap-3">
-                <span class="extra-price">$2.50/day</span>
+                <span class="extra-price" dir="ltr">$2.50/<?= $text['day'] ?></span>
                 <div class="toggle-switch">
-                  <input type="checkbox" id="extradriver" name="extras[]" value="Additional Drivers - $2.50/day">
+                  <input type="checkbox" id="extradriver" name="extras[]" value="<?= $text['additional_drivers'] ?> - $2.50/<?= $text['day'] ?>">
                   <span class="slider"></span>
                 </div>
               </div>
@@ -482,26 +519,26 @@ function carImageUrl($image)
 
         <!-- TOTAL PRICE -->
         <div class="bg-gradient-to-r from-gold/10 to-yellow-500/10 p-7 rounded-2xl border border-gold/30 text-center">
-          <p class="text-gold font-bold mb-3 text-lg">Total Estimated Price</p>
-          <p id="total-price" class="text-5xl font-black text-[var(--text-primary)]" role="status" aria-live="polite">MAD0</p>
-          <p id="days-count" class="text-[var(--text-muted)] mt-2 text-lg" aria-live="polite"></p>
-          <p id="insurance-info" class="text-sm text-gold mt-3 font-medium">Basic Insurance (included)</p>
+          <p class="text-gold font-bold mb-3 text-lg"><?= $text['total_estimated_price'] ?></p>
+          <p id="total-price" class="text-5xl font-black text-primary" role="status" aria-live="polite" dir="ltr">MAD0</p>
+          <p id="days-count" class="text-muted mt-2 text-lg" aria-live="polite"></p>
+          <p id="insurance-info" class="text-sm text-gold mt-3 font-medium"><?= $text['basic_insurance_included'] ?></p>
           <p id="extras-info" class="text-sm text-amber-300 mt-2"></p>
           <?php if ($hasDiscount): ?>
-            <p class="text-green-400 text-sm mt-2 font-bold">You save MAD<?= number_format(($originalPricePerDay - $discountedPricePerDay) * $minDays) ?> on minimum rental!</p>
+            <p class="text-green-400 text-sm mt-2 font-bold"><?= $text['you_save'] ?> <span dir="ltr">MAD<?= formatNumber(($originalPricePerDay - $discountedPricePerDay) * $minDays) ?></span> <?= $text['on_minimum_rental'] ?></p>
           <?php endif; ?>
         </div>
 
         <!-- PERSONAL INFO -->
         <div>
-          <h2 class="text-2xl font-bold text-gold mb-4">Personal Details</h2>
+          <h2 class="text-2xl font-bold text-gold mb-4"><?= $text['personal_details'] ?></h2>
           <div class="space-y-4">
-            <input type="text" name="name" required placeholder="Full Name" 
-                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
-            <input type="email" name="email" required placeholder="Email Address" 
-                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
-            <input type="tel" name="phone" required placeholder="Phone (WhatsApp)" 
-                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold">
+            <input type="text" name="name" required placeholder="<?= $text['full_name'] ?>" 
+                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold text-primary">
+            <input type="email" name="email" required placeholder="<?= $text['email_address'] ?>" 
+                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold text-primary">
+            <input type="tel" name="phone" required placeholder="<?= $text['phone_whatsapp'] ?>" 
+                   class="w-full p-4 bg-white/10 border border-border rounded-2xl focus:ring-2 focus:ring-gold text-primary phone-number" dir="ltr">
           </div>
         </div>
 
@@ -511,7 +548,7 @@ function carImageUrl($image)
           <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.134.297-.347.446-.52.149-.174.198-.297.297-.446.099-.148.05-.273-.024-.385-.074-.112-.67-1.62-.92-2.22-.246-.594-.495-.59-.67-.599-.174-.008-.371-.008-.569-.008-.197 0-.52.074-.792.372-.273.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.558 5.745 8.623 8.05.297.149.595.223.893.298.297.074.595.05.893-.025.297-.074 1.255-.52 1.43-.966.173-.446.173-.82.124-.966-.05-.148-.198-.297-.446-.446zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
           </svg>
-          Send Booking via WhatsApp
+          <?= t('send_booking') ?>
         </button>
       </form>
     </div>
@@ -594,9 +631,14 @@ function carImageUrl($image)
     const insuranceTotal = days * insuranceCostPerDay;
     const grandTotal = carTotal + insuranceTotal + extrasTotal;
 
-    totalEl.textContent = 'MAD' + grandTotal.toLocaleString();
-    daysEl.textContent = days + ' day' + (days > 1 ? 's' : '');
-    const labels = { basic: "Basic Insurance (included)", smart: "Smart Insurance (+$8.90/day)", premium: "Premium Insurance (+$14.40/day)" };
+    totalEl.textContent = 'MAD' + grandTotal.toLocaleString('en-US');
+    totalEl.setAttribute('dir', 'ltr');
+    daysEl.textContent = days + ' <?= $text['day'] ?>' + (days > 1 ? 's' : '');
+    const labels = { 
+      basic: "<?= $text['basic_insurance_included'] ?>", 
+      smart: "<?= $text['smart_insurance'] ?> (+$8.90/<?= $text['day'] ?>)", 
+      premium: "<?= $text['premium_insurance'] ?> (+$14.40/<?= $text['day'] ?>)" 
+    };
     insuranceInfo.textContent = labels[selectedInsurance];
 
     if (selectedExtras.length > 0) {
@@ -647,7 +689,10 @@ function carImageUrl($image)
     tabBar.classList.remove('active-booking');
     tabBar.classList.add('active-details');
     tabBar.style.boxShadow = '0 8px 50px rgba(255, 215, 0, 0.5)';
-    setTimeout(() => window.location.href = this.getAttribute('href'), 500);
+    setTimeout(() => {
+      const href = this.getAttribute('href');
+      window.location.href = href;
+    }, 500);
   });
 
   form.addEventListener('submit', function(e) {
