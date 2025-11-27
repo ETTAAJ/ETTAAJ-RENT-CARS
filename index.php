@@ -115,24 +115,24 @@
                   <div class="flex items-center justify-center gap-3 flex-wrap">
                       <?php if ($hasDiscount): ?>
                         <span class="text-2xl text-muted line-through opacity-70" dir="ltr">
-                          MAD <?= formatNumber($originalPrice) ?>
+                          <?= formatPrice($originalPrice) ?>
                         </span>
                       <?php endif; ?>
 
                       <div class="text-4xl sm:text-5xl font-extrabold <?= $hasDiscount ? 'text-green-400' : 'text-white' ?>" dir="ltr">
-                        <?= formatNumber($discountedPrice) ?>
+                        <?= formatPrice($discountedPrice) ?>
                       </div>
                   </div>
                   <span class="inline-block px-4 py-2 bg-gradient-to-r from-gold to-yellow-500 text-black font-bold rounded-full text-sm mt-2">
-                    <span dir="ltr">MAD</span>/<?= $text['day'] ?>
+                    <span dir="ltr"><?= formatPrice($discountedPrice, 0) ?></span>/<?= $text['day'] ?>
                   </span>
 
                   <div class="flex gap-3 mt-3 text-xs font-medium">
                       <span class="px-3 py-1 bg-card-dark rounded-full border border-border text-muted">
-                          <?= $text['week'] ?>: <strong class="text-primary" dir="ltr">MAD<?= formatNumber((float)$car['price_week']) ?></strong>
+                          <?= $text['week'] ?>: <strong class="text-primary" dir="ltr"><?= formatPrice((float)$car['price_week']) ?></strong>
                       </span>
                       <span class="px-3 py-1 bg-card-dark rounded-full border border-border text-muted">
-                          <?= $text['month'] ?>: <strong class="text-primary" dir="ltr">MAD<?= formatNumber((float)$car['price_month']) ?></strong>
+                          <?= $text['month'] ?>: <strong class="text-primary" dir="ltr"><?= formatPrice((float)$car['price_month']) ?></strong>
                       </span>
                   </div>
               </div>
@@ -647,11 +647,16 @@
     if (isLoading) return;
     isLoading = true;
 
+    // Get current currency from URL or default to MAD
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentCurrency = urlParams.get('currency') || 'MAD';
+
     const params = new URLSearchParams({
       search: els.search.value || '',
       gear: els.gear.value,
       fuel: els.fuel.value,
       sort: els.sort.value,
+      currency: currentCurrency,
       ajax: 1
     });
 
@@ -702,6 +707,26 @@
   els.gear.addEventListener('change', fetchCars);
   els.fuel.addEventListener('change', fetchCars);
   els.sort.addEventListener('change', fetchCars);
+
+  // Reload page when currency changes (currency switcher uses links, so this ensures refresh)
+  // Also refresh cards if currency parameter changes in URL
+  let lastCurrency = new URLSearchParams(window.location.search).get('currency') || 'MAD';
+  const checkCurrencyChange = () => {
+    const currentCurrency = new URLSearchParams(window.location.search).get('currency') || 'MAD';
+    if (currentCurrency !== lastCurrency) {
+      lastCurrency = currentCurrency;
+      // Currency changed, reload cards to update prices
+      fetchCars();
+    }
+  };
+  
+  // Check for currency changes periodically (in case URL changes without page reload)
+  setInterval(checkCurrencyChange, 500);
+  
+  // Also check on popstate (back/forward button)
+  window.addEventListener('popstate', () => {
+    setTimeout(checkCurrencyChange, 100);
+  });
 </script>
 </body>
 </html>

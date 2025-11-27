@@ -135,11 +135,11 @@ require_once 'config.php';
     .theme-toggle input:checked ~ .moon { opacity: 1; }
 
     /* Language Switcher */
-    .lang-switcher {
+    .lang-switcher, .currency-switcher {
       position: relative;
       display: inline-block;
     }
-    .lang-dropdown {
+    .lang-dropdown, .currency-dropdown {
       position: absolute;
       top: 100%;
       right: 0;
@@ -157,12 +157,14 @@ require_once 'config.php';
       z-index: 1000;
     }
     .lang-switcher:hover .lang-dropdown,
-    .lang-switcher.active .lang-dropdown {
+    .lang-switcher.active .lang-dropdown,
+    .currency-switcher:hover .currency-dropdown,
+    .currency-switcher.active .currency-dropdown {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
     }
-    .lang-option {
+    .lang-option, .currency-option {
       display: flex;
       align-items: center;
       gap: 0.75rem;
@@ -173,11 +175,11 @@ require_once 'config.php';
       color: var(--primary);
       text-decoration: none;
     }
-    .lang-option:hover {
+    .lang-option:hover, .currency-option:hover {
       background: var(--hover-bg);
       color: var(--gold);
     }
-    .lang-option.active {
+    .lang-option.active, .currency-option.active {
       background: rgba(255, 215, 0, 0.15);
       color: var(--gold);
       font-weight: 600;
@@ -188,7 +190,7 @@ require_once 'config.php';
       border-radius: 2px;
       object-fit: cover;
     }
-    .lang-current {
+    .lang-current, .currency-current {
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -197,14 +199,15 @@ require_once 'config.php';
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .lang-current:hover {
+    .lang-current:hover, .currency-current:hover {
       background: var(--hover-bg);
     }
     /* RTL Support */
     html[dir="rtl"] {
       direction: rtl;
     }
-    html[dir="rtl"] .lang-dropdown {
+    html[dir="rtl"] .lang-dropdown,
+    html[dir="rtl"] .currency-dropdown {
       right: auto;
       left: 0;
     }
@@ -291,9 +294,15 @@ require_once 'config.php';
     $langNames = ['en' => 'EN', 'fr' => 'FR', 'ar' => 'AR'];
     $currentPage = basename($_SERVER['PHP_SELF']);
     
+    // Currency info
+    $currencyInfo = getCurrency();
+    $currencySymbols = ['MAD' => 'MAD', 'USD' => '$', 'EUR' => '€'];
+    $currencyNames = ['MAD' => 'Moroccan Dirham', 'USD' => 'US Dollar', 'EUR' => 'Euro'];
+    
     // Preserve current URL parameters (like id, search, etc.)
     $currentParams = $_GET;
     unset($currentParams['lang']); // Remove lang to avoid duplication
+    unset($currentParams['currency']); // Remove currency to avoid duplication
   ?>
 
   <!-- Mobile Sidebar -->
@@ -340,6 +349,32 @@ require_once 'config.php';
             <a href="?lang=ar<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="lang-option <?= $lang === 'ar' ? 'active' : '' ?>">
               <span><?= $langFlags['ar'] ?></span>
               <span>العربية</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Currency Switcher Mobile -->
+      <div class="mt-4 pt-4 border-t border-border">
+        <div class="currency-switcher w-full">
+          <div class="currency-current text-sm text-[var(--muted)]">
+            <span><?= $currencySymbols[$currencyInfo['code']] ?> <?= $currencyInfo['code'] ?></span>
+            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+          <div class="currency-dropdown">
+            <a href="?currency=MAD<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'MAD' ? 'active' : '' ?>">
+              <span>MAD</span>
+              <span>Moroccan Dirham</span>
+            </a>
+            <a href="?currency=USD<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'USD' ? 'active' : '' ?>">
+              <span>$</span>
+              <span>US Dollar</span>
+            </a>
+            <a href="?currency=EUR<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'EUR' ? 'active' : '' ?>">
+              <span>€</span>
+              <span>Euro</span>
             </a>
           </div>
         </div>
@@ -415,6 +450,30 @@ require_once 'config.php';
               </div>
             </div>
           </nav>
+
+          <!-- Currency Switcher Desktop -->
+          <div class="currency-switcher">
+            <div class="currency-current">
+              <span class="text-sm"><?= $currencySymbols[$currencyInfo['code']] ?> <?= $currencyInfo['code'] ?></span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+            <div class="currency-dropdown">
+              <a href="?currency=MAD<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'MAD' ? 'active' : '' ?>">
+                <span>MAD</span>
+                <span>Moroccan Dirham</span>
+              </a>
+              <a href="?currency=USD<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'USD' ? 'active' : '' ?>">
+                <span>$</span>
+                <span>US Dollar</span>
+              </a>
+              <a href="?currency=EUR<?= !empty($currentParams) ? '&' . http_build_query($currentParams) : '' ?>" class="currency-option <?= $currencyInfo['code'] === 'EUR' ? 'active' : '' ?>">
+                <span>€</span>
+                <span>Euro</span>
+              </a>
+            </div>
+          </div>
 
           <!-- Language Switcher Desktop -->
           <div class="lang-switcher">
@@ -514,10 +573,26 @@ require_once 'config.php';
       }
     });
 
-    // Close language dropdown when clicking outside
+    // Currency Switcher - Keep dropdown open on click
+    document.querySelectorAll('.currency-switcher').forEach(switcher => {
+      const current = switcher.querySelector('.currency-current');
+      if (current) {
+        current.addEventListener('click', (e) => {
+          e.stopPropagation();
+          switcher.classList.toggle('active');
+        });
+      }
+    });
+
+    // Close language/currency dropdown when clicking outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.lang-switcher')) {
         document.querySelectorAll('.lang-switcher').forEach(switcher => {
+          switcher.classList.remove('active');
+        });
+      }
+      if (!e.target.closest('.currency-switcher')) {
+        document.querySelectorAll('.currency-switcher').forEach(switcher => {
           switcher.classList.remove('active');
         });
       }

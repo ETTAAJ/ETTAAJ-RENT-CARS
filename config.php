@@ -29,9 +29,10 @@ if (!function_exists('langUrl')) {
         // Get current URL parameters (like id for car-detail.php, booking.php)
         $currentParams = $_GET;
         
-        // Remove lang from current params to avoid duplication
+        // Remove lang and ajax from current params to avoid duplication
         unset($currentParams['lang']);
         unset($currentParams['ajax']); // Remove ajax parameter
+        // Note: currency is preserved automatically
         
         // Merge with provided params (provided params take precedence)
         $finalParams = array_merge($currentParams, $params);

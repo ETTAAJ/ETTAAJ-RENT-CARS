@@ -241,12 +241,12 @@ $hasDiscount = $discount > 0;
             <div class="flex items-center justify-center gap-3 flex-wrap">
               <?php if ($hasDiscount): ?>
                 <span class="text-2xl text-muted line-through opacity-70" dir="ltr">
-                  MAD <?= formatNumber($originalPrice) ?>
+                  <?= formatPrice($originalPrice) ?>
                 </span>
               <?php endif; ?>
 
               <div class="text-4xl sm:text-5xl font-extrabold <?= $hasDiscount ? 'text-green-400' : 'text-white' ?>" dir="ltr">
-                <?= formatNumber($discountedPrice) ?>
+                <?= formatPrice($discountedPrice) ?>
               </div>
             </div>
           </div>
@@ -297,14 +297,14 @@ $hasDiscount = $discount > 0;
                 <i class="bi bi-calendar-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Daily:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_basic_price'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_basic_price'] ?? 0)) ?></strong>
                 </div>
               </div>
               <div class="flex items-center gap-3">
                 <i class="bi bi-shield-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Deposit:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_basic_deposit'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_basic_deposit'] ?? 0)) ?></strong>
                 </div>
               </div>
             </div>
@@ -318,14 +318,14 @@ $hasDiscount = $discount > 0;
                 <i class="bi bi-calendar-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Daily:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_smart_price'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_smart_price'] ?? 0)) ?></strong>
                 </div>
               </div>
               <div class="flex items-center gap-3">
                 <i class="bi bi-shield-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Deposit:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_smart_deposit'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_smart_deposit'] ?? 0)) ?></strong>
                 </div>
               </div>
             </div>
@@ -339,14 +339,14 @@ $hasDiscount = $discount > 0;
                 <i class="bi bi-calendar-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Daily:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_premium_price'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_premium_price'] ?? 0)) ?></strong>
                 </div>
               </div>
               <div class="flex items-center gap-3">
                 <i class="bi bi-shield-check w-6 h-6 text-gold"></i>
                 <div>
                   <span class="text-muted">Deposit:</span>
-                  <strong class="text-primary ml-2" dir="ltr">MAD <?= formatNumber((float)($car['insurance_premium_deposit'] ?? 0)) ?></strong>
+                  <strong class="text-primary ml-2" dir="ltr"><?= formatPrice((float)($car['insurance_premium_deposit'] ?? 0)) ?></strong>
                 </div>
               </div>
             </div>
@@ -505,24 +505,24 @@ $hasDiscount = $discount > 0;
                   <div class="flex items-center justify-center gap-3 flex-wrap">
                     <?php if ($s_hasDiscount): ?>
                       <span class="text-2xl text-muted line-through opacity-70" dir="ltr">
-                        MAD <?= formatNumber($s_original) ?>
+                        <?= formatPrice($s_original) ?>
                       </span>
                     <?php endif; ?>
 
                     <div class="text-4xl sm:text-5xl font-extrabold <?= $s_hasDiscount ? 'text-green-400' : 'text-white' ?>" dir="ltr">
-                      <?= formatNumber($s_discounted) ?>
+                      <?= formatPrice($s_discounted) ?>
                     </div>
                   </div>
                   <span class="inline-block px-4 py-2 bg-gradient-to-r from-gold to-yellow-500 text-black font-bold rounded-full text-sm mt-2">
-                    <span dir="ltr">MAD</span>/<?= $text['day'] ?>
+                    <span dir="ltr"><?= formatPrice($s_discounted, 0) ?></span>/<?= $text['day'] ?>
                   </span>
 
                   <div class="flex gap-3 mt-3 text-xs font-medium">
                     <span class="px-3 py-1 bg-card-dark rounded-full border border-border text-muted">
-                      <?= $text['week'] ?>: <strong class="text-primary" dir="ltr">MAD<?= formatNumber((float)$similar['price_week']) ?></strong>
+                      <?= $text['week'] ?>: <strong class="text-primary" dir="ltr"><?= formatPrice((float)$similar['price_week']) ?></strong>
                     </span>
                     <span class="px-3 py-1 bg-card-dark rounded-full border border-border text-muted">
-                      <?= $text['month'] ?>: <strong class="text-primary" dir="ltr">MAD<?= formatNumber((float)$similar['price_month']) ?></strong>
+                      <?= $text['month'] ?>: <strong class="text-primary" dir="ltr"><?= formatPrice((float)$similar['price_month']) ?></strong>
                     </span>
                   </div>
                 </div>
